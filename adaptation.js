@@ -1,6 +1,9 @@
 class Adaptation {
     constructor() {
     }
+
+    static
+
 }
 
 
