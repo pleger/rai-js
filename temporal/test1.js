@@ -1,9 +1,33 @@
-const StateMachine = require('javascript-state-machine');
-const Signal = require('signal-js');
+//const StateMachine = require('javascript-state-machine');
+const signal = require('signal-js');
+const inspector = require('object-inspect');
 
-Sig
-console.log(Signal);
-console.log(StateMachine);
+var s = new signal.default();
+//var obj = { a: 1, b: [3,4], t: function() {} };
+//obj.c = obj;
+//console.log(inspector(obj.t));
+//console.log(inspector(signal.default()));
+//console.log(inspector(s.on));
+
+var t = s.on('basic', function(arg) {console.log(arg); return arg + 1});
+
+s.emit('basic', 1);
+
+console.log(inspector(t));
+
+
+// > 1
+// > 2
+// > 3
+
+
+//console.log(signal);
+
+
+
+
+//console.log(s);
+//console.log(StateMachine);
 
 
 
@@ -23,7 +47,7 @@ console.log(StateMachine);
 const rxjs = require('rxjs');
 const { range } = require('rxjs');
 const { map, filter } = require('rxjs/operators');
-*/
+
 
 let fsm = new StateMachine({
     init: 'solid',
@@ -60,9 +84,9 @@ fsm.state;             // 'gas'
 console.log("END");
 
 //console.log(signal);
-//signal.on('basic', arg => console.log(arg));
+signal.on('basic', arg => console.log(arg));
 
-//signal.emit('basic', 1);
+signal.emit('basic', 1);
 
 /*
 const myObservable = new rxjs.Subject();

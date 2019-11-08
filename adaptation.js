@@ -1,9 +1,0 @@
-class Adaptation {
-    constructor() {
-    }
-
-    static
-
-}
-
-
