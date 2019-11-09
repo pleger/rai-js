@@ -1,6 +1,15 @@
 let logger = require('./libs/logger');
 const inspector = require('object-inspect');
 
+function evaluateCondition(obj, expresion) {
+    let result;
+    with (obj) {
+        result = eval(expresion);
+    }
+    return result;
+}
+
+
 class Condition {
     #signals;
 
@@ -20,25 +29,21 @@ class Condition {
             let s = this.#signals[i].getS();
             let sym = this.#signals[i].id;
 
-            let thiz = this;
+            let thiz = this; // a patch to evaluate a condition with a context
             s.on(sym, function() {thiz.evaluate.apply(thiz)});
         }
     }
 
     evaluate() {
-        logger.debug("Starting condition evaluation");
-
-        let evalContext = this.prepareCondition();
-        logger.debug("Object EVAL:" + inspector(evalContext));
-        let b = eval.call(evalContext, this.#condition);
-        //let b = this.#condition.eval.call(evalContext);
+        let evalContext = this.prepareConditionContext();
+        let b = evaluateCondition(evalContext, this.#condition);
         logger.debug("Condition (%s): %s", this.#condition, b);
 
         return b;
     }
 
-    prepareCondition() {
-        let obj = {};
+    prepareConditionContext() {
+        let obj = {}; //object context
         for (let i = 0; i < this.#signals.length; ++i) {
             logger.debug(this.#signals[i].id + " " + this.#signals[i].value);
             obj[this.#signals[i].id] = this.#signals[i].value;

@@ -7,8 +7,10 @@ class Signal {
     #signal; //string
     #value;  //value
 
-    constructor(signal) {
+    constructor(signal, initialValue) {
         this.#signal = signal;
+        this.#value = initialValue;
+
         this.#s = new signalrt.default();
     }
 
