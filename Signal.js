@@ -11,12 +11,12 @@ class Signal {
         this.#signal = signal;
         this.#value = initialValue;
 
-        this.#s = new signalrt.default();
+        this.#s = new signalrt.default(); //todo: remove it!!
     }
 
     set value(val) {
         this.#value = val;
-        this.#s.emit(this.#signal,val);
+        this.#s.emit(this.#signal, val);
     }
 
     get value() {

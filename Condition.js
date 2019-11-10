@@ -3,16 +3,24 @@ const inspector = require('object-inspect');
 
 function evaluateCondition(obj, expresion) {
     let result;
-    with (obj) {
-        result = eval(expresion);
+    try {
+        with (obj) {
+            result = eval(expresion);
+        }
+    } catch (error) {
+        if (error instanceof ReferenceError) {
+            console.error("Some variables in Condition are undefined:", error);
+            throw error;
+        }
+        else {
+            throw error;
+        }
     }
     return result;
 }
 
-
 class Condition {
     #signals;
-
     #condition; //for now, a string
 
     constructor(signals, condition) {
@@ -23,23 +31,20 @@ class Condition {
     }
 
     enableSignals() {
-
         for (let i = 0; i < this.#signals.length; ++i) {
-            logger.debug("THIS:" + inspector(this.#signals[i]));
             let s = this.#signals[i].getS();
             let sym = this.#signals[i].id;
 
             let thiz = this; // a patch to evaluate a condition with a context
-            s.on(sym, function() {thiz.evaluate.apply(thiz)});
+            s.on(sym, function () {
+                thiz.evaluate.apply(thiz)
+            });
         }
     }
 
     evaluate() {
         let evalContext = this.prepareConditionContext();
-        let b = evaluateCondition(evalContext, this.#condition);
-        logger.debug("Condition (%s): %s", this.#condition, b);
-
-        return b;
+        return evaluateCondition(evalContext, this.#condition);
     }
 
     prepareConditionContext() {
