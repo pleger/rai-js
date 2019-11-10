@@ -1,34 +1,50 @@
 let logger = require('./libs/logger');
-const signalrt = require('signal-js');
 
 class Signal {
-    #s;
-
-    #signal; //string
+    #sym; //string
     #value;  //value
 
-    constructor(signal, initialValue) {
-        this.#signal = signal;
+    #callbacks;
+
+    constructor(sym, initialValue) {
+        this.#sym = sym;
         this.#value = initialValue;
 
-        this.#s = new signalrt.default(); //todo: remove it!!
+        this.#callbacks = [];
     }
+
+    /*
+    _on(callback) {
+        this.#s.on(this.#signal, callback);
+    }
+    */
+
+
+    on(callback) {
+        this.#callbacks.push(callback);
+    }
+
+    /*
+    set _value(val) {
+        this.#value = val;
+        this.#s.emit(this.#signal, val);
+    }
+     */
 
     set value(val) {
         this.#value = val;
-        this.#s.emit(this.#signal, val);
+        let sym = this.#sym;
+        this.#callbacks.forEach(function(callback) {
+            callback(sym);
+        });
     }
 
     get value() {
         return this.#value;
     }
 
-    getS() {
-        return this.#s;
-    }
-
     get id() {
-        return this.#signal;
+        return this.#sym;
     }
 }
 

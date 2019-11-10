@@ -7,7 +7,6 @@ class COPR {
     #adaptationsPool;
 
     constructor(){
-        logger.trace("Starting COPR");
         if(!COPR.instance){
            COPR.instance = this;
            this.init();
@@ -22,6 +21,10 @@ class COPR {
     deploy(adaptation){
         let adap = new Adaptation(adaptation);
         this.#adaptationsPool.push(adap);
+    }
+
+    static addSI(object) {
+        
     }
 }
 

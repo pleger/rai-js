@@ -1,7 +1,6 @@
 let logger = require('./libs/logger');
 
 class Adaptation {
-
     #condition;
     #adaptation;
     #options;

@@ -32,11 +32,8 @@ class Condition {
 
     enableSignals() {
         for (let i = 0; i < this.#signals.length; ++i) {
-            let s = this.#signals[i].getS();
-            let sym = this.#signals[i].id;
-
             let thiz = this; // a patch to evaluate a condition with a context
-            s.on(sym, function () {
+            this.#signals[i].on(function () {
                 thiz.evaluate.apply(thiz)
             });
         }
