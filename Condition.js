@@ -9,8 +9,7 @@ function evaluateCondition(obj, expresion) {
         }
     } catch (error) {
         if (error instanceof ReferenceError) {
-            console.error("Some variables in Condition are undefined:", error);
-            throw error;
+            return false;
         }
         else {
             throw error;
