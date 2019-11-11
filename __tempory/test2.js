@@ -1,9 +1,9 @@
 //helper functions
 const logger = require('../libs/logger');
 
-const COPR = require('../COPR');
+const COPR = require('../src/COPR');
 
-const Adaptation = require('../Adaptation');
+const Adaptation = require('../src/Adaptation');
 o = 2;
 with(o) {v = 2};
 
