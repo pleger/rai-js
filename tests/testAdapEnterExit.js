@@ -1,12 +1,13 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
-const CORP = require('../src/CSI');
-
-//todo: remove CORP.init()
+const CSI = require('../src/CSI');
 
 module.exports = testCase({
+    'setUp': function (test) {
+        CSI.init();
+        test();
+    },
     'enter_exit-1': function (test) {
-        CORP.init();
         let lactivation = [];
 
         let adap = {
@@ -18,21 +19,19 @@ module.exports = testCase({
             },
             condition: "a > 10"
         };
-        CORP.deploy(adap);
+        CSI.deploy(adap);
 
         let obj = {
             x: new Signal(2),
             y: 20
         };
 
-        CORP.exhibit({a: obj.x}, obj);
+        CSI.exhibit({a: obj.x}, obj);
 
         test.deepEqual(lactivation, []);
         test.done();
     },
     'enter_exit-2': function (test) {
-        CORP.init();
-
         let lactivation = [];
         let adap = {
             enter: function () {
@@ -44,20 +43,18 @@ module.exports = testCase({
             condition: "a > 10"
         };
 
-        CORP.deploy(adap);
-        var obj = {
+        CSI.deploy(adap);
+        let obj = {
             x: new Signal(2),
             y: 20
         };
-        CORP.exhibit({a: obj.x}, obj);
+        CSI.exhibit({a: obj.x}, obj);
         obj.x.value = 20;
 
         test.deepEqual(lactivation, ["enter"]);
         test.done();
     },
     'enter_exit-3': function (test) {
-        CORP.init();
-
         let lactivation = [];
         let adap = {
             enter: function () {
@@ -69,12 +66,12 @@ module.exports = testCase({
             condition: "a > 10"
         };
 
-        CORP.deploy(adap);
+        CSI.deploy(adap);
         let obj = {
             x: new Signal(2),
             y: 20
         };
-        CORP.exhibit({a: obj.x}, obj);
+        CSI.exhibit({a: obj.x}, obj);
         obj.x.value = 20;
         obj.x.value = 5;
 
@@ -82,8 +79,6 @@ module.exports = testCase({
         test.done();
     },
     'enter_exit-4': function (test) {
-        CORP.init();
-
         let lactivation = [];
         let adap = {
             enter: function () {
@@ -95,12 +90,12 @@ module.exports = testCase({
             condition: "a > 10"
         };
 
-        CORP.deploy(adap);
+        CSI.deploy(adap);
         let obj = {
             x: new Signal(2),
             y: 20
         };
-        CORP.exhibit({a: obj.x}, obj);
+        CSI.exhibit({a: obj.x}, obj);
         obj.x.value = 20;
         obj.x.value = 1000;
 
@@ -108,8 +103,6 @@ module.exports = testCase({
         test.done();
     },
     'enter_exit-5': function (test) {
-        CORP.init();
-
         let lactivation = [];
         let adap = {
             enter: function () {
@@ -121,12 +114,12 @@ module.exports = testCase({
             condition: "a > 10"
         };
 
-        CORP.deploy(adap);
+        CSI.deploy(adap);
         let obj = {
             x: new Signal(2),
             y: 20
         };
-        CORP.exhibit({a: obj.x}, obj);
+        CSI.exhibit({a: obj.x}, obj);
         obj.x.value = 20;
         obj.x.value = 1;
         obj.x.value = 50;

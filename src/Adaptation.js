@@ -1,9 +1,9 @@
 let logger = require('../libs/logger');
 let Condition = require('../src/Condition');
 
+//todo: avoid write many empty functions
 let emptyFunction = function () {
 };
-
 
 class Adaptation {
 

@@ -34,10 +34,9 @@ class CSI {
         })
     };
 
-
     deploy(adap) {
         adap = new Adaptation(adap);
-        adap.name = adap.name || "Context " + this._adaptationsPool.length + 1;
+        adap.name = adap.name || "Context" + this._adaptationsPool.length + 1;
 
         this._adaptationsPool.push(adap);
     }

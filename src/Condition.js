@@ -1,5 +1,4 @@
 let logger = require('../libs/logger');
-const inspector = require('object-inspect');
 
 function evaluateCondition(obj, expresion) {
     let result;

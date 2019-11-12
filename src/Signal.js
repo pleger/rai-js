@@ -33,7 +33,6 @@ class Signal {
         this._callbacks.forEach(function (callback) {
             callback(sym);
         });
-
         return this._val; //todo: remove?
     }
 

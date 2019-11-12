@@ -19,5 +19,8 @@
     "performance-now": "^2.1.0",
     "rxjs": "^6.5.3",
     "signal-js": "^2.3.2"
+  },
+  "devDependencies": {
+    "sys": "0.0.1"
   }
 }
