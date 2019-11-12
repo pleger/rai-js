@@ -3,20 +3,28 @@ let logger = require('../libs/logger');
 class Signal {
 
     constructor(initialValue, sym) {
-        //todo: Always signal should start with '_'
+        //todo: Always signal should start with '_'?
         this._sym = sym !== undefined ? sym : "_";
         this._val = initialValue;
-        this.callbacks = [];
+        this._callbacks = [];
+    }
+
+    get value() {
+        return this._val;
+    }
+
+    get id() {
+        return this._sym;
     }
 
     on(callback) {
-        this.callbacks.push(callback);
+        this._callbacks.push(callback);
     }
 
     evaluate(val) {
         this._val = val;
         let sym = this._sym;
-        this.callbacks.forEach(function (callback) {
+        this._callbacks.forEach(function (callback) {
             callback(sym);
         });
 
@@ -29,14 +37,6 @@ class Signal {
 
     set value(val) {
         this.evaluate(val);
-    }
-
-    get value() {
-        return this._val;
-    }
-
-    get id() {
-        return this._sym;
     }
 }
 

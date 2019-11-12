@@ -23,13 +23,19 @@ class Condition {
         this._condition = condition;
         //todo: in the final implementation, signals should be empty (only testing debugging)
         this._signals = signals !== undefined ? signals : [];
-        this._callback = function() {return false};
+        this._callback = function () {return false};
 
         this.enableSignals();
     }
 
+    //todo: this method should be for debugging!
+    get signals() {
+        return this._signals;
+    }
+
     on(callback) {
         this._callback = callback;
+        //this._callbacks.push(callback);
     }
 
     addSignal(signal) {
@@ -55,6 +61,7 @@ class Condition {
     evaluate() {
         let evalContext = this.prepareConditionContext();
         let result = evaluateCondition(evalContext, this._condition);
+        
         this._callback(result);
         return result;
     }

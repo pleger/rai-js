@@ -3,27 +3,17 @@ const Adaptation = require('../src/Adaptation');
 const Condition = require('../src/Condition');
 const Signal = require('../src/Signal');
 
+
 module.exports = testCase({
     'create-1': function (test) {
-        let cond = new Condition("a > 10");
-        let adap = new Adaptation({condition: cond});
+        let adap = new Adaptation({condition: "a > 10"});
 
-        test.equal(cond, adap.condition);
-
-        test.done();
-    },
-    'create-2': function (test) {
-        let cond = new Condition("a > 10");
-        let adap = new Adaptation(cond, "", {});
-
-        test.equal(cond, adap.condition);
+        test.notEqual(adap.condition, undefined);
 
         test.done();
     },
     'eval-1': function (test) {
-        let s = new Signal(0, "a");
-        let cond = new Condition("a > 10", [s]);
-        let adap = new Adaptation({condition: cond});
+        let adap = new Adaptation({condition: "a > 10"});
 
         test.equal(adap.isActive(), false);
 
