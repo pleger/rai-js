@@ -1,6 +1,6 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
-const CORP = require('../src/COPR');
+const CORP = require('../src/CSI');
 
 //todo: remove CORP.init()
 

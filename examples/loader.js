@@ -1,10 +1,10 @@
-const CORP = require('../src/COPR');
+const CSI = require('../src/CSI');
 const Adaptation = require('../src/Adaptation');
 const Signal =  require('../src/Signal');
 const Condition = require('../src/Condition');
 
 module.exports = {
-    CORP: CORP,
+    CSI: CSI,
     Adaptation: Adaptation,
     Signal: Signal,
     Condition: Condition

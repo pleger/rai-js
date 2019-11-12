@@ -1,14 +1,14 @@
 let logger = require('../libs/logger');
 let Adaptation = require('./Adaptation');
 
-class COPR {
+class CSI {
 
     constructor() {
-        if (!COPR.instance) {
-            COPR.instance = this;
+        if (!CSI.instance) {
+            CSI.instance = this;
             this.init();
         }
-        return COPR.instance;
+        return CSI.instance;
     }
 
     init() {
@@ -57,4 +57,4 @@ class COPR {
     }
 }
 
-module.exports = new COPR();
+module.exports = new CSI();

@@ -1,7 +1,7 @@
 //helper functions
 const logger = require('../libs/logger');
 
-const COPR = require('../src/COPR');
+const COPR = require('../src/CSI');
 
 const Adaptation = require('../src/Adaptation');
 o = 2;
