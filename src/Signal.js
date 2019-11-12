@@ -1,12 +1,14 @@
 let logger = require('../libs/logger');
+const performance = require('performance-now');
 
 class Signal {
 
     constructor(initialValue, sym) {
         //todo: Always signal should start with '_'?
         this._sym = sym !== undefined ? sym : "_";
-        this._val = initialValue;
         this._callbacks = [];
+
+        this.value = initialValue;
     }
 
     get value() {
@@ -15,6 +17,10 @@ class Signal {
 
     get id() {
         return this._sym;
+    }
+
+    get timestamp() {
+        return this._timestamp;
     }
 
     on(callback) {
@@ -36,6 +42,7 @@ class Signal {
     }
 
     set value(val) {
+        this._timestamp = performance(); //todo: I can simplify this implementation
         this.evaluate(val);
     }
 }

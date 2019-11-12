@@ -1,7 +1,4 @@
 let testCase = require('nodeunit').testCase;
-
-const Adaptation = require('../src/Adaptation');
-const Condition = require('../src/Condition');
 const Signal = require('../src/Signal');
 const CORP = require('../src/COPR');
 
@@ -10,45 +7,41 @@ const CORP = require('../src/COPR');
 module.exports = testCase({
     'create': function (test) {
         CORP.init();
-        let adap = new Adaptation({condition: "a > 10"});
 
-        CORP.deploy(adap);
-        test.equals(adap.isActive(), false);
+        CORP.deploy({condition: "a > 10"});
+        test.equals(CORP.getActiveAdaps().length, 0);
 
         test.done();
     },
     'create-2': function (test) {
         CORP.init();
-        let adap = new Adaptation({condition: "a > 10"});
         let obj = {
             x: new Signal(9),
             y: 56,
         };
 
-        CORP.deploy(adap);
+        CORP.deploy({condition: "a > 10"});
         CORP.exhibit({a: obj.x}, obj);
-        test.equals(adap.isActive(), false);
+        test.equals(CORP.getActiveAdaps().length, 0);
 
         test.done();
     },
     'activate': function (test) {
         CORP.init();
-        let adap = new Adaptation({condition: "a > 10"});
         let obj = {
             x: new Signal(9),
             y: 56,
         };
 
-        CORP.deploy(adap);
+        CORP.deploy({condition: "a > 10"});
         CORP.exhibit({a: obj.x}, obj);
         obj.x.value = 15;
-        test.equals(adap.isActive(), true);
+        test.equals(CORP.getActiveAdaps().length, 1);
 
         test.done();
     },
     'active-2': function(test) {
         CORP.init();
-        let adap = new Adaptation({condition: "a > 10 && b > 10"});
         let obj1 = {
             x: new Signal(9),
             y: 62,
@@ -58,19 +51,18 @@ module.exports = testCase({
             y: 49,
         };
 
-        CORP.deploy(adap);
+        CORP.deploy({condition: "a > 10 && b > 10"});
         CORP.exhibit({a: obj1.x}, obj1);
         CORP.exhibit({b: obj2.x}, obj2);
         obj1.x.value = 15;
-        test.equals(adap.isActive(), false);
+        test.equals(CORP.getActiveAdaps().length, 0);
         obj2.x.value = 34;
-        test.equals(adap.isActive(), true);
+        test.equals(CORP.getActiveAdaps().length, 1);
 
         test.done();
     },
     'active-3': function(test) {
         CORP.init();
-        let adap = new Adaptation({condition: "a > b"});
         let obj1 = {
             x: new Signal(9),
             y: 62,
@@ -80,47 +72,77 @@ module.exports = testCase({
             y: 49,
         };
 
-        CORP.deploy(adap);
+        CORP.deploy({condition: "a > b"});
         CORP.exhibit({a: obj1.x}, obj1);
         CORP.exhibit({b: obj2.x}, obj2);
 
-        test.equals(adap.isActive(), true);
+        test.equals(CORP.getActiveAdaps().length, 1);
         obj2.x.value = 34;
-        test.equals(adap.isActive(), false);
+        test.equals(CORP.getActiveAdaps().length, 0);
 
         test.done();
     },
     'active-4': function(test) {
-        console.log("START");
         CORP.init();
-        let adap = new Adaptation({condition: "a > 50"});
+
         let obj1 = {
-            x: new Signal(9),
+            x: new Signal(1),
             y: 62,
         };
         let obj2 = {
-            x: new Signal(5),
+            x: new Signal(2),
             y: 49,
         };
 
-        CORP.deploy(adap);
+        CORP.deploy({condition: "a > 50"});
         CORP.exhibit({a: obj1.x}, obj1);
         CORP.exhibit({a: obj2.x}, obj2);
 
-        console.log("ADAPTIVE 1 (false):" + adap.isActive());
-        test.equals(adap.isActive(), false);
+        test.equals(CORP.getActiveAdaps().length, 0);
 
-        console.log("ADAPTIVE 2-1 (false):" + adap.isActive());
         obj1.x.value = 100;
-        test.equals(adap.isActive(), true);
-        console.log("ADAPTIVE 2-2 (true):" + adap.isActive());
+        test.equals(CORP.getActiveAdaps().length, 1);
+        obj2.x.value = 150;
+        test.equals(CORP.getActiveAdaps().length, 1);
 
-        console.log("ADAPTIVE 3-1 (true):" + adap.isActive());
-        obj2.x.value = 100;
-        console.log("ADAPTIVE 3-2 (true):" + adap.isActive());
-        test.equals(adap.isActive(), false);
+        test.done();
+    },
+    'active-5': function(test) {
+        CORP.init();
+        let obj = {
+            x: new Signal(1),
+            y: 62,
+        };
 
-        console.log("END");
+        CORP.deploy({condition: "a > 50"});
+        CORP.deploy({condition: "a > 100"});
+        CORP.exhibit({a: obj.x}, obj);
+
+        test.equals(CORP.getActiveAdaps().length, 0);
+        obj.x.value = 60;
+        test.equals(CORP.getActiveAdaps().length, 1);
+        obj.x.value = 110;
+        test.equals(CORP.getActiveAdaps().length, 2);
+
+        test.done();
+    },
+    'active-6': function(test) {
+        CORP.init();
+        let obj = {
+            x: new Signal(1),
+            y: 62,
+        };
+
+        CORP.deploy({condition: "a > 50"});
+        CORP.deploy({condition: "a > 100"});
+        CORP.exhibit({a: obj.x}, obj);
+
+        test.equals(CORP.getActiveAdaps().length, 0);
+        obj.x.value = 60;
+        test.equals(CORP.getActiveAdaps().length, 1);
+        obj.x.value = 110;
+        test.equals(CORP.getActiveAdaps().length, 2);
+
         test.done();
     }
 });

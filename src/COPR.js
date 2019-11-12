@@ -15,8 +15,30 @@ class COPR {
         this._adaptationsPool = [];
     }
 
+    getAdaps(filter) {
+        filter = filter || function () {
+            return true;
+        };
+        return this._adaptationsPool.filter(filter);
+    }
+
+    getActiveAdaps() {
+        return this.getAdaps(function (adaptation) {
+            return adaptation.isActive()
+        })
+    };
+
+    getInactiveAdaps() {
+        return this.getAdaps(function (adaptation) {
+            return !adaptation.isActive()
+        })
+    };
+
+
     deploy(adap) {
+        adap = new Adaptation(adap);
         adap.name = adap.name || "Context " + this._adaptationsPool.length + 1;
+
         this._adaptationsPool.push(adap);
     }
 

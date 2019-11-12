@@ -1,7 +1,7 @@
 let logger = require('../libs/logger');
 let Condition = require('../src/Condition');
 
-var emptyFunction = function () {
+let emptyFunction = function () {
 };
 
 
@@ -9,9 +9,10 @@ class Adaptation {
 
     constructor(adap) {
         this._cond = adap.condition === undefined ? "false" :
-            adap.condition.constructor.name === "Condition" ? adap.condition : //todo: this for debugging!
-                new Condition(adap.condition);
-        this._adaptation = adap.adaptation || emptyFunction;
+            typeof(adap.condition) === "string"?  new Condition(adap.condition):
+            adap.condition; //todo: this for debugging! (condition is already created)
+
+        this._variation = adap.variation || emptyFunction;
         this._enter = adap.enter || emptyFunction;
         this._exit = adap.exit || emptyFunction;
         this._active = false;
@@ -27,12 +28,20 @@ class Adaptation {
     enableCondition() {
         let thiz = this;
         this._cond.on(function (active) {
-            thiz._active = active;
-            return thiz._active;
+            if (active) {
+                thiz._variation();
+            }
+
+            if (active !== thiz._active) {
+                thiz._active = active;
+                if (thiz._active) thiz._enter();
+                else thiz._exit();
+            }
+            return thiz._active; //todo: Is it really necessary?
         });
     }
 
-    isActive() {
+    isActive() { //todo: this may be used only for debugging
         return this._active;
     }
 

@@ -16,6 +16,7 @@
     "nodeunit": "^0.11.3",
     "npm": "^6.13.0",
     "object-inspect": "^1.6.0",
+    "performance-now": "^2.1.0",
     "rxjs": "^6.5.3",
     "signal-js": "^2.3.2"
   }

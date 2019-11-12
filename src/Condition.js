@@ -23,7 +23,9 @@ class Condition {
         this._condition = condition;
         //todo: in the final implementation, signals should be empty (only testing debugging)
         this._signals = signals !== undefined ? signals : [];
-        this._callback = function () {return false};
+        this._callback = function () {
+            return false;
+        };
 
         this.enableSignals();
     }
@@ -61,13 +63,18 @@ class Condition {
     evaluate() {
         let evalContext = this.prepareConditionContext();
         let result = evaluateCondition(evalContext, this._condition);
-        
+
         this._callback(result);
         return result;
     }
 
     prepareConditionContext() {
         let obj = {}; //object context
+
+        this._signals.sort(function (sa, sb) {
+           return sa.timestamp - sb.timestamp;
+        });
+
         for (let i = 0; i < this._signals.length; ++i) {
             obj[this._signals[i].id] = this._signals[i].value; //todo: maybe to add different signals
         }
