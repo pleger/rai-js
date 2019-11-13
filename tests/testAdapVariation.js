@@ -1,12 +1,14 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
-const CORP = require('../src/CSI');
+const CSI = require('../src/CSI');
 
-//todo: remove CORP.init()
-/*
+
 module.exports = testCase({
+    'setUp': function (test) {
+        CSI.init();
+        test();
+    },
     'variation-1': function(test) {
-        CORP.init();
         let adap = {
             enter: function () {
                 lactivation.push("enter");
@@ -19,6 +21,7 @@ module.exports = testCase({
             },
             condition: "a > 10"
         };
+
+        test.done();
     }
 });
-*/

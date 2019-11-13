@@ -1,7 +1,7 @@
 let logger = require('../libs/logger');
 
 const Signal = require('../src/Signal');
-const Condition = require('../src/Condition');
+const Condition = require('../src/SignalComp');
 
 logger.info("start test conditions");
 

@@ -1,23 +1,28 @@
 let logger = require('../libs/logger');
-let Condition = require('../src/Condition');
+let SignalComp = require('./SignalComp');
 
-//todo: avoid write many empty functions
+//todo: avoid write many times an empty function
 let emptyFunction = function () {
 };
 
 class Adaptation {
 
     constructor(adap) {
-        this._cond = adap.condition === undefined ? "false" :
-            typeof(adap.condition) === "string"?  new Condition(adap.condition):
-            adap.condition; //todo: this for debugging! (condition is already created)
+        this._cond = adap.condition === undefined ?
+            new SignalComp("false"): typeof(adap.condition) === "string"?
+            new SignalComp(adap.condition): adap.condition; //it should be already a signal composition
 
         this._variation = adap.variation || emptyFunction;
         this._enter = adap.enter || emptyFunction;
         this._exit = adap.exit || emptyFunction;
         this._active = false;
+        this._name = adap.name || "_";
 
         this.enableCondition();
+    }
+
+    set name(name) {
+        this._name = name;
     }
 
     //todo: this method is only used for debugging

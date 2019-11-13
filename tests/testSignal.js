@@ -6,7 +6,7 @@ module.exports = testCase({
         let signal = new Signal(10, "a");
 
         test.equal(signal.id, "a");
-        test.equal(signal._val, 10);
+        test.equal(signal.value, 10);
 
         test.done();
     },

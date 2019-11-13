@@ -1,6 +1,6 @@
 let testCase = require('nodeunit').testCase;
 const Adaptation = require('../src/Adaptation');
-const Condition = require('../src/Condition');
+const signalComp = require('../src/SignalComp');
 const Signal = require('../src/Signal');
 
 
@@ -21,7 +21,7 @@ module.exports = testCase({
     },
     'eval-2': function (test) {
         let s = new Signal(0, "a");
-        let cond = new Condition("a > 10", [s]);
+        let cond = new signalComp("a > 10", [s]);
         let adap = new Adaptation({condition: cond});
 
         test.equal(adap.isActive(), false);
@@ -35,7 +35,7 @@ module.exports = testCase({
         let s2 = new Signal(0, "b");
         let s3 = new Signal(0, "c");
 
-        let cond = new Condition("a > 10 && b > c", [s1, s2, s3]);
+        let cond = new signalComp("a > 10 && b > c", [s1, s2, s3]);
         let adap = new Adaptation({condition: cond});
 
         test.equal(adap.isActive(), false);

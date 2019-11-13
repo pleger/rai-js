@@ -25,7 +25,7 @@ module.exports = testCase({
 
         test.done();
     },
-    'activate': function (test) {
+    'activate-0': function (test) {
         let obj = {
             x: new Signal(9),
             y: 56,
@@ -38,7 +38,21 @@ module.exports = testCase({
 
         test.done();
     },
-    'active-2': function (test) {
+    'activate-1': function (test) {
+        let obj = {
+            x: new Signal(9),
+            y: new Signal(0),
+        };
+
+        CSI.deploy({condition: "a > 10 && b > 10"});
+        CSI.exhibit({a: obj.x, b: obj.y}, obj);
+        obj.x.value = 15;
+        obj.y.value = 20;
+        test.equals(CSI.getActiveAdaps().length, 1);
+
+        test.done();
+    },
+    'activate-2': function (test) {
         let obj1 = {
             x: new Signal(9),
             y: 62,
@@ -58,7 +72,7 @@ module.exports = testCase({
 
         test.done();
     },
-    'active-3': function (test) {
+    'activate-3': function (test) {
         let obj1 = {
             x: new Signal(9),
             y: 62,
@@ -78,7 +92,7 @@ module.exports = testCase({
 
         test.done();
     },
-    'active-4': function (test) {
+    'activate-4': function (test) {
         let obj1 = {
             x: new Signal(1),
             y: 62,
@@ -101,7 +115,7 @@ module.exports = testCase({
 
         test.done();
     },
-    'active-5': function (test) {
+    'activate-5': function (test) {
         let obj = {
             x: new Signal(1),
             y: 62,
@@ -119,7 +133,7 @@ module.exports = testCase({
 
         test.done();
     },
-    'active-6': function (test) {
+    'activate-6': function (test) {
         let obj = {
             x: new Signal(1),
             y: 62,
