@@ -14,33 +14,39 @@ class CSI {
     init() {
         this._adaptationsPool = [];
         this._signalInterfacePool = [];
+        this._variations = [];
     }
-
-    getAdaps(filter) {
-        filter = filter || function () {
-            return true;
-        };
-        return this._adaptationsPool.filter(filter);
-    }
-
-    getActiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return adaptation.isActive()
-        })
-    };
-
-    getInactiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return !adaptation.isActive()
-        })
-    };
 
     deploy(adap) {
         adap = new Adaptation(adap);
         adap.name = adap.name || "Adaptation_" + (this._adaptationsPool.length + 1);
 
         this._adaptationsPool.push(adap);
-        this._receiveSignalForSignalInterface(adap);
+        this._receiveSignalsForSignalInterfaces(adap);
+        this._addSavedLayers(adap);
+    }
+
+    undeploy(originalAdap) { //todo test!
+        this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
+            return adap.__original__ !== originalAdap;
+        });
+    }
+
+    _addSavedLayers(adap) {
+        let variations = this._variations.filter(function (variation) {
+            return adap.__original__ === variation[0];
+        });
+
+        console.log(variations.length);
+
+        variations.forEach(function (variation) {
+            adap.addVariation(variation[1], variation[2], variation[3]);
+        });
+
+        //removing added layers
+        this._variations = this._variations.filter(function (variation) {
+            return adap.__original__ !== variation[0];
+        });
     }
 
     exhibit(object, signalInterface) {
@@ -49,7 +55,11 @@ class CSI {
         this._exhibitAnInterface(signalInterface);
     }
 
-    _receiveSignalForSignalInterface(adap) {
+    addLayer(adap, obj, methodName, variation) {
+        this._variations.push([adap, obj, methodName, variation]);
+    }
+
+    _receiveSignalsForSignalInterfaces(adap) {
         this._signalInterfacePool.forEach(function (si) {
             for (let field in si[1]) {
                 if (si[1].hasOwnProperty(field)) {
@@ -81,6 +91,25 @@ class CSI {
             }
         }
     }
+
+    getAdaps(filter) {
+        filter = filter || function () {
+            return true;
+        };
+        return this._adaptationsPool.filter(filter);
+    }
+
+    getActiveAdaps() {
+        return this.getAdaps(function (adaptation) {
+            return adaptation.isActive()
+        })
+    };
+
+    getInactiveAdaps() {
+        return this.getAdaps(function (adaptation) {
+            return !adaptation.isActive()
+        })
+    };
 }
 
 module.exports = new CSI();

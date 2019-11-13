@@ -203,5 +203,45 @@ module.exports = testCase({
         test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
 
         test.done();
+    },
+    'two-activations-conflicts': function (test) {
+        let activates = [];
+        let obj = {
+            x: new Signal(0),
+            y: new Signal(0),
+            z: new Signal(0)
+        };
+
+        let adap1 = {
+            condition: new SignalComp("a > 1 && b > 10 && !adap2"),
+            enter: function() {
+                activates.push("enter-adap1");
+            },
+            exit: function () {
+                activates.push("exit-adap1");
+            }
+        };
+
+        let adap2 = {
+            condition: new SignalComp("c > 5"),
+            enter: function() {
+                activates.push("enter-adap2");
+            },
+            exit: function () {
+                activates.push("exit-adap2");
+            }
+        };
+
+        CSI.exhibit(obj,{a: obj.x, b: obj.y, c: obj.z});
+        CSI.exhibit(adap2,{adap2: adap2.condition});
+        CSI.deploy(adap1);
+        CSI.deploy(adap2);
+
+        obj.x.value = 10;
+        obj.y.value = 100;
+        obj.z.value = 10;
+        test.deepEqual(activates, ["enter-adap1","exit-adap1","enter-adap2"]);
+
+        test.done();
     }
 });

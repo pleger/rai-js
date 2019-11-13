@@ -9,16 +9,16 @@ class Adaptation {
 
     constructor(adap) {
         this._cond = adap.condition === undefined ?
-            new SignalComp("false"): typeof(adap.condition) === "string"?
-            new SignalComp(adap.condition): adap.condition; //it should be already a signal composition
+            new SignalComp("false") : typeof (adap.condition) === "string" ?
+                new SignalComp(adap.condition) : adap.condition; //it should be already a signal composition
 
-        this._variation = adap.variation || emptyFunction;
         this._enter = adap.enter || emptyFunction;
         this._exit = adap.exit || emptyFunction;
         this._active = false;
         this._name = adap.name || "_";
         this.__original__ = adap;  //for debugging
 
+        this._variations = [];
         this.enableCondition();
     }
 
@@ -35,17 +35,49 @@ class Adaptation {
         return this._cond;
     }
 
+    addVariation(obj, methodName, variation) {
+        console.log(["ADDING", methodName, obj, variation]);
+        this._variations.push([obj, methodName, variation, obj[methodName]]);
+    }
+
+    _installVariations() {
+        let thiz = this;
+        console.log("INSTALLING:"+this._variations.length);
+        this._variations.forEach(function (variation) {
+            console.log(["XXXX", variation]);
+            let obj = variation[0];
+            let methodName = variation[1];
+            let method = variation[3];
+            let variationMethod = variation[2];
+            obj[methodName] = function () {
+                console.log("VARIATIONS");
+                thiz.proceed = method;
+                return variationMethod.apply(obj, arguments);
+            };
+        });
+    }
+
+    _uninstallVariations() {
+        this._variations.forEach(function (variation) {
+            let obj = variation[0];
+            let methodName = variation[1];
+            obj[methodName] = variation[3]; //original method
+        });
+    }
+
     enableCondition() {
         let thiz = this;
         this._cond.on(function (active) {
-            if (active) {
-                thiz._variation();
-            }
 
             if (active !== thiz._active) {
                 thiz._active = active;
-                if (thiz._active) thiz._enter();
-                else thiz._exit();
+                if (thiz._active) {
+                    thiz._enter();
+                    thiz._installVariations();
+                } else {
+                    thiz._exit();
+                    thiz._uninstallVariations();
+                }
             }
             return thiz._active; //todo: Is it really necessary?
         });
@@ -55,7 +87,6 @@ class Adaptation {
         return this._active;
     }
 
-    //todo: check if this method is really used
     addSignal(signal) {
         this._cond.addSignal(signal);
     }
