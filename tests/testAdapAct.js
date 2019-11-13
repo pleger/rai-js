@@ -20,7 +20,7 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > 10"});
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
         test.equals(CSI.getActiveAdaps().length, 0);
 
         test.done();
@@ -32,7 +32,7 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > 10"});
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
         obj.x.value = 15;
         test.equals(CSI.getActiveAdaps().length, 1);
 
@@ -45,7 +45,7 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > 10 && b > 10"});
-        CSI.exhibit({a: obj.x, b: obj.y}, obj);
+        CSI.exhibit(obj,{a: obj.x, b: obj.y});
         obj.x.value = 15;
         obj.y.value = 20;
         test.equals(CSI.getActiveAdaps().length, 1);
@@ -63,8 +63,8 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > 10 && b > 10"});
-        CSI.exhibit({a: obj1.x}, obj1);
-        CSI.exhibit({b: obj2.x}, obj2);
+        CSI.exhibit(obj1,{a: obj1.x});
+        CSI.exhibit(obj2,{b: obj2.x});
         obj1.x.value = 15;
         test.equals(CSI.getActiveAdaps().length, 0);
         obj2.x.value = 34;
@@ -83,8 +83,8 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > b"});
-        CSI.exhibit({a: obj1.x}, obj1);
-        CSI.exhibit({b: obj2.x}, obj2);
+        CSI.exhibit( obj1,{a: obj1.x});
+        CSI.exhibit( obj2,{b: obj2.x});
 
         test.equals(CSI.getActiveAdaps().length, 1);
         obj2.x.value = 34;
@@ -103,8 +103,8 @@ module.exports = testCase({
         };
 
         CSI.deploy({condition: "a > 50"});
-        CSI.exhibit({a: obj1.x}, obj1);
-        CSI.exhibit({a: obj2.x}, obj2);
+        CSI.exhibit(obj1,{a: obj1.x});
+        CSI.exhibit(obj2,{a: obj2.x});
 
         test.equals(CSI.getActiveAdaps().length, 0);
 
@@ -123,7 +123,7 @@ module.exports = testCase({
 
         CSI.deploy({condition: "a > 50"});
         CSI.deploy({condition: "a > 100"});
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
 
         test.equals(CSI.getActiveAdaps().length, 0);
         obj.x.value = 60;
@@ -141,7 +141,7 @@ module.exports = testCase({
 
         CSI.deploy({condition: "a > 50"});
         CSI.deploy({condition: "a > 100"});
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
 
         test.equals(CSI.getActiveAdaps().length, 0);
         obj.x.value = 60;

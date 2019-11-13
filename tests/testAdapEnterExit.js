@@ -26,7 +26,7 @@ module.exports = testCase({
             y: 20
         };
 
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
 
         test.deepEqual(lactivation, []);
         test.done();
@@ -48,7 +48,7 @@ module.exports = testCase({
             x: new Signal(2),
             y: 20
         };
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
         obj.x.value = 20;
 
         test.deepEqual(lactivation, ["enter"]);
@@ -71,7 +71,7 @@ module.exports = testCase({
             x: new Signal(2),
             y: 20
         };
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
         obj.x.value = 20;
         obj.x.value = 5;
 
@@ -95,7 +95,7 @@ module.exports = testCase({
             x: new Signal(2),
             y: 20
         };
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit(obj,{a: obj.x});
         obj.x.value = 20;
         obj.x.value = 1000;
 
@@ -119,7 +119,7 @@ module.exports = testCase({
             x: new Signal(2),
             y: 20
         };
-        CSI.exhibit({a: obj.x}, obj);
+        CSI.exhibit( obj,{a: obj.x});
         obj.x.value = 20;
         obj.x.value = 1;
         obj.x.value = 50;

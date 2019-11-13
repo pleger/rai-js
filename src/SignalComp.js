@@ -20,7 +20,7 @@ function _evaluateCondition(expresion, contextObj) {
 class SignalComp {
 
     constructor(expression, signals, id) {
-        this._expression = expression; //todo: change to expression
+        this._expression = expression;
         this._signals = signals ||  [];
         this._id = id || "_"; //used to emit
 
@@ -52,6 +52,7 @@ class SignalComp {
     }
 
     addSignal(signal) {
+        //if prevents of reentrancy issues (A in A, A in [A], A in B && B in A)
         if (this !== signal && !this._signals.includes(signal) && this._isInExpression(signal.id)) {
             this._signals.push(signal);
             this._enableSignal(signal);
@@ -88,8 +89,7 @@ class SignalComp {
     evaluate() { //todo: maybe to get change name
         let evalContext = this._prepareConditionContext();
         this._value = _evaluateCondition(this._expression, evalContext);
-        this._timestamp = performance(); //todo: I can simplify this implementation
-
+        this._timestamp = performance(); //todo: can I simplify this implementation?
         this._emit();
 
         return this._value;

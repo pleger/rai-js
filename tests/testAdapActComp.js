@@ -24,8 +24,8 @@ module.exports = testCase({
 
         CSI.deploy(adap1);
         CSI.deploy(adap2);
-        CSI.exhibit({a: obj.x}, obj);
-        CSI.exhibit({pp: adap1.condition}, adap1);
+        CSI.exhibit(obj,{a: obj.x});
+        CSI.exhibit(adap1,{pp: adap1.condition});
 
         test.ok("creating and deploying adaptations");
 
@@ -54,8 +54,8 @@ module.exports = testCase({
 
         CSI.deploy(adap1);
         CSI.deploy(adap2);
-        CSI.exhibit({a: obj.x}, obj);
-        CSI.exhibit({h: adap1.condition}, adap1);
+        CSI.exhibit(obj,{a: obj.x});
+        CSI.exhibit(adap1,{h: adap1.condition});
         obj.x.value = 10;
         test.deepEqual(activates, ["enter-adap1","enter-adap2"]);
 
@@ -89,17 +89,118 @@ module.exports = testCase({
             }
         };
 
+        CSI.deploy(adap1);
+        CSI.deploy(adap2);
+        CSI.deploy(adap3);
+
+        CSI.exhibit(obj,{a: obj.x, b: obj.y});
+        CSI.exhibit(adap1,{h: adap1.condition});
+        CSI.exhibit(adap2,{r: adap2.condition});
+        obj.x.value = 10;
+        obj.y.value = 100;
+        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3"]);
+
+        test.done();
+    },
+    'two-activations-4': function (test) {
+        let activates = [];
+        let obj = {
+            x: new Signal(0),
+            y: new Signal(5),
+        };
+
+        let adap1 = {
+            condition: new SignalComp("a > 1"),
+            enter: function() {
+                activates.push("enter-adap1");
+            },
+            exit: function () {
+                activates.push("exit-adap1");
+            }
+        };
+
+        let adap2 = {
+            condition: new SignalComp("b > 5"),
+            enter: function() {
+                activates.push("enter-adap2");
+            },
+            exit: function () {
+                activates.push("exit-adap2");
+            }
+        };
+
+        let adap3 = {
+            condition: new SignalComp("h && r"),
+            enter: function() {
+                activates.push("enter-adap3");
+            },
+            exit: function () {
+                activates.push("exit-adap3");
+            }
+        };
 
         CSI.deploy(adap1);
         CSI.deploy(adap2);
         CSI.deploy(adap3);
 
-        CSI.exhibit({a: obj.x, b: obj.y}, obj);
-        CSI.exhibit({h: adap1.condition}, adap1);
-        CSI.exhibit({r: adap2.condition}, adap2);
+        CSI.exhibit(obj,{a: obj.x, b: obj.y});
+        CSI.exhibit(adap1,{h: adap1.condition});
+        CSI.exhibit(adap2,{r: adap2.condition});
         obj.x.value = 10;
         obj.y.value = 100;
-        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3"]);
+        obj.x.value = -1;
+        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
+
+        test.done();
+    },
+    'two-activations-5': function (test) {
+        let activates = [];
+        let obj = {
+            x: new Signal(0),
+            y: new Signal(5),
+        };
+
+        let adap1 = {
+            condition: new SignalComp("a > 1"),
+            enter: function() {
+                activates.push("enter-adap1");
+            },
+            exit: function () {
+                activates.push("exit-adap1");
+            }
+        };
+
+        let adap2 = {
+            condition: new SignalComp("b > 5"),
+            enter: function() {
+                activates.push("enter-adap2");
+            },
+            exit: function () {
+                activates.push("exit-adap2");
+            }
+        };
+
+        let adap3 = {
+            condition: new SignalComp("h && r"),
+            enter: function() {
+                activates.push("enter-adap3");
+            },
+            exit: function () {
+                activates.push("exit-adap3");
+            }
+        };
+
+        CSI.exhibit(obj,{a: obj.x, b: obj.y});
+        CSI.exhibit(adap1,{h: adap1.condition});
+        CSI.exhibit(adap2,{r: adap2.condition});
+        CSI.deploy(adap1);
+        CSI.deploy(adap2);
+        CSI.deploy(adap3);
+
+        obj.x.value = 10;
+        obj.y.value = 100;
+        obj.x.value = -1;
+        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
 
         test.done();
     }

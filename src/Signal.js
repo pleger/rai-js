@@ -4,8 +4,7 @@ const performance = require('performance-now');
 class Signal {
 
     constructor(initialValue, id) {
-        //todo: Always signal should start with id '_'?
-        this._id = id || "_";
+        this._id = id || "_"; //it means does have an identifier
         this._subcribers = [];
 
         this.value = initialValue;

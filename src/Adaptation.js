@@ -17,12 +17,17 @@ class Adaptation {
         this._exit = adap.exit || emptyFunction;
         this._active = false;
         this._name = adap.name || "_";
+        this.__original__ = adap;  //for debugging
 
         this.enableCondition();
     }
 
     set name(name) {
         this._name = name;
+    }
+
+    get name() {
+        return this._name;
     }
 
     //todo: this method is only used for debugging
