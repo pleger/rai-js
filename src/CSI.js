@@ -22,8 +22,10 @@ class CSI {
         adap.name = adap.name || "Adaptation_" + (this._adaptationsPool.length + 1);
 
         this._adaptationsPool.push(adap);
-        this._receiveSignalsForSignalInterfaces(adap);
         this._addSavedLayers(adap);
+
+        //it is to know if signals are already send data
+        this._receiveSignalsForSignalInterfaces(adap);
     }
 
     undeploy(originalAdap) { //todo test!
@@ -36,8 +38,6 @@ class CSI {
         let variations = this._variations.filter(function (variation) {
             return adap.__original__ === variation[0];
         });
-
-        console.log(variations.length);
 
         variations.forEach(function (variation) {
             adap.addVariation(variation[1], variation[2], variation[3]);
@@ -90,6 +90,14 @@ class CSI {
                 });
             }
         }
+    }
+
+    _addProceed(proceed) {
+        this.proceed = proceed;
+    }
+
+    _removeProceed() {
+        this.proceed = undefined;
     }
 
     getAdaps(filter) {

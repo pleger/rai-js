@@ -1,5 +1,5 @@
 let logger = require('../libs/logger');
-let SignalComp = require('./SignalComp');
+const SignalComp = require('./SignalComp');
 
 //todo: avoid write many times an empty function
 let emptyFunction = function () {
@@ -36,23 +36,22 @@ class Adaptation {
     }
 
     addVariation(obj, methodName, variation) {
-        console.log(["ADDING", methodName, obj, variation]);
         this._variations.push([obj, methodName, variation, obj[methodName]]);
     }
 
     _installVariations() {
-        let thiz = this;
-        console.log("INSTALLING:"+this._variations.length);
         this._variations.forEach(function (variation) {
-            console.log(["XXXX", variation]);
             let obj = variation[0];
             let methodName = variation[1];
             let method = variation[3];
             let variationMethod = variation[2];
             obj[methodName] = function () {
-                console.log("VARIATIONS");
-                thiz.proceed = method;
-                return variationMethod.apply(obj, arguments);
+                Adaptation.proceed =function() {
+                    return method.apply(obj,arguments);
+                };
+                let result = variationMethod.apply(obj, arguments);
+                Adaptation.proceed = undefined;
+                return result;
             };
         });
     }
