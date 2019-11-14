@@ -1,7 +1,7 @@
 let logger = require('../libs/logger');
 const SignalComp = require('./SignalComp');
 
-//todo: avoid write many times an empty function
+//Just avoid write many times an empty function
 let emptyFunction = function () {
 };
 
@@ -16,7 +16,7 @@ class Adaptation {
         this._exit = adap.exit || emptyFunction;
         this._active = false;
         this._name = adap.name || "_";
-        this.__original__ = adap;  //for debugging
+        this.__original__ = adap;
 
         this._variations = [];
         this.enableCondition();
@@ -30,7 +30,7 @@ class Adaptation {
         return this._name;
     }
 
-    //todo: this method is only used for debugging
+    //This method is only used for debugging
     get condition() {
         return this._cond;
     }
@@ -78,11 +78,10 @@ class Adaptation {
                     thiz._uninstallVariations();
                 }
             }
-            return thiz._active; //todo: Is it really necessary?
         });
     }
 
-    isActive() { //todo: this may be used only for debugging
+    isActive() { //This may be used only for debugging
         return this._active;
     }
 

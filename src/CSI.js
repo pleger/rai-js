@@ -28,10 +28,12 @@ class CSI {
         this._receiveSignalsForSignalInterfaces(adap);
     }
 
-    undeploy(originalAdap) { //todo test!
+    undeploy(originalAdap) {
+        this._uninstallVariations(originalAdap);
         this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
             return adap.__original__ !== originalAdap;
         });
+        this._removingLayers(originalAdap);
     }
 
     _addSavedLayers(adap) {
@@ -42,10 +44,19 @@ class CSI {
         variations.forEach(function (variation) {
             adap.addVariation(variation[1], variation[2], variation[3]);
         });
+    }
 
-        //removing added layers
+    _uninstallVariations(originalAdap) {
+        this._adaptationsPool.forEach(function (adap) {
+            if (adap.__original__ === originalAdap) {
+                adap._uninstallVariations();
+            }
+        });
+    }
+
+    _removingLayers(originalAdap) {
         this._variations = this._variations.filter(function (variation) {
-            return adap.__original__ !== variation[0];
+            return originalAdap !== variation[0];
         });
     }
 

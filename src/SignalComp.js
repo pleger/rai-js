@@ -86,10 +86,10 @@ class SignalComp {
         });
     }
 
-    evaluate() { //todo: maybe to get change name
+    evaluate() { //this method replaces set value
         let evalContext = this._prepareConditionContext();
         this._value = _evaluateCondition(this._expression, evalContext);
-        this._timestamp = performance(); //todo: can I simplify this implementation?
+        this._timestamp = performance();
         this._emit();
 
         return this._value;

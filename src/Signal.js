@@ -28,7 +28,7 @@ class Signal {
 
     set value(val) {
         this._val = val;
-        this._timestamp = performance(); //todo: I can simplify this implementation
+        this._timestamp = performance();
         this._emit();
     }
 
