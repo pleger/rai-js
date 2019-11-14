@@ -1,5 +1,5 @@
-let logger = require('./libs/logger');
-let Adaptation = require('./src/Adaptation');
-let CopJs = require('./src/CSI');
+const EXAMPLE_SCRIPT = 1;
+require("./examples/example" + EXAMPLE_SCRIPT);
 
-/* do it */
+
+

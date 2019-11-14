@@ -7,5 +7,6 @@ module.exports = {
     CSI: CSI,
     Adaptation: Adaptation,
     Signal: Signal,
-    SignalComp: SignalComp
-};
+    SignalComp: SignalComp,
+    show: console.log
+}; 

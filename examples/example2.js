@@ -12,9 +12,16 @@ let videoCard = {
     }
 };
 
-let lowBattery = {
-  condition: new SignalComp("level < 30")
+let GPS = {
+  getLocation: function () {
+      return "Tokyo";
+  }
 };
+
+let lowBattery = {
+    condition: new SignalComp("level < 30")
+};
+
 
 CSI.exhibit(battery, {level: battery.charge});
 CSI.addLayer(lowBattery, videoCard, "graph", function() {show("Low Performance")} );
