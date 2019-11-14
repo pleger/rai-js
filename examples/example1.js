@@ -1,4 +1,4 @@
-let {Signal, Condition, Adaptation, CORP} = require("./loader");
+let {Signal, Condition, Adaptation, CORP} = require("../loader");
 
 console.log([Signal, Condition]);
 
