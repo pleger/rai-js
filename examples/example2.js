@@ -1,34 +1,30 @@
 let {Signal, SignalComp, Adaptation, CSI, show} = require("../loader");
 
-let battery = {
-    name: "UMIDIGI",
-    charge: new Signal(100),
-    capacity: 5105
-};
-
-let videoCard = {
-    graph: function() {
-        show("High Performance");
-    }
-};
-
-let GPS = {
-  getLocation: function () {
-      return "Tokyo";
+let screen = {
+  gyroscope: new Signal(0),
+  rotate: function() {
+      show("[LAYER]Rotating");
   }
 };
 
-let lowBattery = {
-    condition: new SignalComp("level < 30")
+let playerView = {
+  draw: function() { show("Showing a Movie");}
 };
 
+let landscape = {
+    condition: new SignalComp("gyroLevel > 45"),
+    enter: function() {
+        screen.rotate();
+    }
+};
 
-CSI.exhibit(battery, {level: battery.charge});
-CSI.addLayer(lowBattery, videoCard, "graph", function() {show("Low Performance")} );
-CSI.deploy(lowBattery);
+CSI.exhibit(screen, {gyroLevel:screen.gyroscope});
 
-videoCard.graph();
+CSI.addLayer(landscape, playerView, "draw", function() {Adaptation.proceed(); show("[LAYER] Lanscape Mode")} );
+CSI.deploy(landscape);
 
-battery.charge.value = 20;
+playerView.draw();
 
-videoCard.graph();
+show("\nChange SmartPhone position");
+screen.gyroscope.value = 60;
+playerView.draw();

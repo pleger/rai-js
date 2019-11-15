@@ -12,14 +12,15 @@ class CSI {
     }
 
     init() {
-        this._adaptationsPool = [];
-        this._signalInterfacePool = [];
-        this._variations = [];
+        this._adaptationsPool = []; //only adaptations
+        this._signalInterfacePool = []; //objects x interface-object
+        this._variations = []; //adap x object x methodName x variations
+        this._originalMethods = []; //object x name x original_method
     }
 
     deploy(adap) {
         adap = new Adaptation(adap);
-        adap.name = adap.name || "Adaptation_" + (this._adaptationsPool.length + 1);
+        adap._name = adap._name !== "_" ? adap._name : "Adaptation_" + (this._adaptationsPool.length + 1);
 
         this._adaptationsPool.push(adap);
         this._addSavedLayers(adap);
@@ -40,9 +41,15 @@ class CSI {
         let variations = this._variations.filter(function (variation) {
             return adap.__original__ === variation[0];
         });
-
+        var thiz = this;
         variations.forEach(function (variation) {
-            adap.addVariation(variation[1], variation[2], variation[3]);
+            let obj = variation[1];
+            let methodName = variation[2];
+            let variationMethod = variation[3];
+
+            thiz._addOriginalMethod(obj, methodName);
+            let originalMethod = thiz._getOriginalMethod(obj, methodName);
+            adap.addVariation(obj, methodName, variationMethod, originalMethod);
         });
     }
 
@@ -60,8 +67,14 @@ class CSI {
         });
     }
 
-    exhibit(object, signalInterface) {
-        this._addSignalInterface(object, signalInterface);
+    exhibit(objects, signalInterface) {
+        objects = !Array.isArray(objects) ? [objects] : objects.length === 0 ? [{}] : objects;
+
+        let thiz = this;
+        objects.forEach(function (object) {
+            thiz._addSignalInterface(object, signalInterface);
+        });
+
         this._addIdSignal(signalInterface);
         this._exhibitAnInterface(signalInterface);
     }
@@ -103,12 +116,20 @@ class CSI {
         }
     }
 
-    _addProceed(proceed) {
-        this.proceed = proceed;
+    _addOriginalMethod(obj, methodName) {
+        let originalMethod = this._getOriginalMethod(obj, methodName);
+
+        if (originalMethod === undefined) {
+            this._originalMethods.push([obj, methodName, obj[methodName]]);
+        }
     }
 
-    _removeProceed() {
-        this.proceed = undefined;
+    _getOriginalMethod(obj, methodName) {
+        let found = this._originalMethods.find(function (tuple) {
+            return obj === tuple[0] && methodName === tuple[1];
+        });
+
+        return found === undefined? undefined: found[2];
     }
 
     getAdaps(filter) {

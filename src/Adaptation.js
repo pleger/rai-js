@@ -35,19 +35,20 @@ class Adaptation {
         return this._cond;
     }
 
-    addVariation(obj, methodName, variation) {
-        this._variations.push([obj, methodName, variation, obj[methodName]]);
+    addVariation(obj, methodName, variation, originalMethod) {
+        this._variations.push([obj, methodName, variation, originalMethod]);
     }
 
     _installVariations() {
         this._variations.forEach(function (variation) {
             let obj = variation[0];
             let methodName = variation[1];
-            let method = variation[3];
             let variationMethod = variation[2];
+            let originalMethod = variation[3];
+
             obj[methodName] = function () {
-                Adaptation.proceed =function() {
-                    return method.apply(obj,arguments);
+                Adaptation.proceed = function () {
+                    return originalMethod.apply(obj, arguments);
                 };
                 let result = variationMethod.apply(obj, arguments);
                 Adaptation.proceed = undefined;
@@ -60,7 +61,8 @@ class Adaptation {
         this._variations.forEach(function (variation) {
             let obj = variation[0];
             let methodName = variation[1];
-            obj[methodName] = variation[3]; //original method
+            let originalMethod = variation[3];
+            obj[methodName] = originalMethod;
         });
     }
 

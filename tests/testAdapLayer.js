@@ -10,11 +10,11 @@ module.exports = testCase({
         test();
     },
     'create': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(9),
             m: function () {
-                activates.push("original")
+                flags.push("original")
             },
         };
 
@@ -24,11 +24,11 @@ module.exports = testCase({
 
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation")
         });
         CSI.deploy(adap);
         obj.m();
-        test.deepEqual(activates, ["variation"]);
+        test.deepEqual(flags, ["variation"]);
 
         test.done();
     },

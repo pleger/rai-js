@@ -9,6 +9,7 @@ function _evaluateCondition(expresion, contextObj) {
         }
     } catch (error) {
         if (error instanceof ReferenceError) {
+            //console.log(["ERROR:", error]);
             return false; //return false when it is not possible to evaluate
         } else {
             throw error; //other error
@@ -26,7 +27,7 @@ class SignalComp {
 
         this._subscribers = [];
         this._enableSignals();
-        this.evaluate();
+        this._lastVal = undefined;
     }
 
     get id() {
@@ -90,7 +91,11 @@ class SignalComp {
         let evalContext = this._prepareConditionContext();
         this._value = _evaluateCondition(this._expression, evalContext);
         this._timestamp = performance();
-        this._emit();
+
+        if (this._value !== this._lastVal) {
+            this._emit();
+            this._lastVal = this._value;
+        }
 
         return this._value;
     }

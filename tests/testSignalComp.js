@@ -102,54 +102,65 @@ module.exports = testCase({
 
         test.done();
     },
-    'condition unknown signal': function (test) {
+    'counting condition signal-1': function (test) {
+        let count = 0;
         let s = new Signal(0, "b");
-
-        let count = 0;
         let cond = new signalComp("a > 10", [s]);
         cond.on(function () {
             test.equal(cond.value, false);
             ++count;
         });
 
-        s.value = 5;
-        s.value = 10;
+        s.value = 5; //don't change the condition
+        s.value = 10; //don't change the condition
         s.value = 45;
-        test.equal(count, 3);
-
-        test.done();
-    },
-    'counting condition signal': function (test) {
-        let s = new Signal(0, "a");
-
-        let count = 0;
-        let cond = new signalComp("a > 10", [s]);
-        cond.on(function () {
-            test.equal(cond.value, false);
-            ++count;
-        });
-
-        s.value = 5;
-        s.value = 1;
-        s.value = 4;
-        test.equal(count, 3);
+        test.equal(count, 1);
 
         test.done();
     },
     'counting condition signal-2': function (test) {
         let s = new Signal(0, "a");
+
         let count = 0;
-        let cond = new signalComp("a > 10");
+        let cond = new signalComp("a > 10", [s]);
         cond.on(function () {
             test.equal(cond.value, false);
             ++count;
         });
 
-        cond.addSignal(s);
         s.value = 5;
         s.value = 1;
         s.value = 4;
-        test.equal(count, 4);
+        test.equal(count, 1);
+
+        test.done();
+    },
+    'counting condition signal-3': function (test) {
+        let count = 0;
+        let s = new Signal(0, "a");
+        let cond = new signalComp("a > 10", [s]);
+        cond.on(function () {
+            ++count;
+        });
+
+        //no there are subscribers here!
+
+        test.equal(count, 0);
+
+        test.done();
+    },
+    'counting condition signal-4': function (test) {
+        let count = 0;
+        let s = new Signal(0, "a");
+        let cond = new signalComp("a > 10", [s]);
+        cond.on(function () {
+            ++count;
+        });
+        s.value = 12;
+        s.value = 8;
+        s.value = 15;
+
+        test.equal(count, 3);
 
         test.done();
     }
