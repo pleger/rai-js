@@ -35,6 +35,10 @@ class Adaptation {
         return this._cond;
     }
 
+    cleanCondition() {
+        this._cond = new SignalComp(this._cond.expression);
+    }
+
     addVariation(obj, methodName, variation, originalMethod) {
         this._variations.push([obj, methodName, variation, originalMethod]);
     }

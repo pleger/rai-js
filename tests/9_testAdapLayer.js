@@ -19,7 +19,7 @@ module.exports = testCase({
         };
 
         let adap = {
-            condition: new SignalComp("a > 1")
+            condition: "a > 1"
         };
 
         CSI.exhibit(obj, {a: obj.x});
@@ -33,11 +33,11 @@ module.exports = testCase({
         test.done();
     },
     'create-2': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(9),
             m: function () {
-                activates.push("original")
+                flags.push("original")
             },
         };
 
@@ -47,21 +47,21 @@ module.exports = testCase({
 
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation");
         });
         obj.m();
 
         CSI.deploy(adap); //later deployment
-        test.deepEqual(activates, ["original"]);
+        test.deepEqual(flags, ["original"]);
 
         test.done();
     },
     'variation-1': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
-                activates.push("original")
+                flags.push("original");
             },
         };
 
@@ -71,21 +71,21 @@ module.exports = testCase({
 
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation");
         });
         CSI.deploy(adap);
         obj.x.value = 10;
         obj.m();
-        test.deepEqual(activates, ["variation"]);
+        test.deepEqual(flags, ["variation"]);
 
         test.done();
     },
     'variation-2-changing-deployment-place': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
-                activates.push("original")
+                flags.push("original");
             },
         };
 
@@ -96,20 +96,20 @@ module.exports = testCase({
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation");
         });
         CSI.deploy(adap);
         obj.m();
-        test.deepEqual(activates, ["variation"]);
+        test.deepEqual(flags, ["variation"]);
 
         test.done();
     },
     'variation-3-changing-deployment-place': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
-                activates.push("original")
+                flags.push("original");
             },
         };
 
@@ -120,20 +120,20 @@ module.exports = testCase({
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation");
         });
         obj.m();
         CSI.deploy(adap);
-        test.deepEqual(activates, ["original"]);
+        test.deepEqual(flags, ["original"]);
 
         test.done();
     },
     'variation-4-addingRemovingLayer': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
-                activates.push("original")
+                flags.push("original")
             },
         };
 
@@ -144,7 +144,7 @@ module.exports = testCase({
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation")
+            flags.push("variation")
         });
         CSI.deploy(adap);
 
@@ -152,16 +152,16 @@ module.exports = testCase({
         obj.x.value = 0;
         obj.m();
 
-        test.deepEqual(activates, ["variation", "original"]);
+        test.deepEqual(flags, ["variation", "original"]);
 
         test.done();
     },
     'calling proceed': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
-                activates.push("original")
+                flags.push("original")
             },
         };
 
@@ -172,17 +172,17 @@ module.exports = testCase({
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
         CSI.addLayer(adap, obj, "m", function () {
-            activates.push("variation");
+            flags.push("variation");
             Adaptation.proceed();
         });
         CSI.deploy(adap);
         obj.m();
-        test.deepEqual(activates, ["variation", "original"]);
+        test.deepEqual(flags, ["variation", "original"]);
 
         test.done();
     },
     'layer-method-with-return': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
@@ -199,15 +199,15 @@ module.exports = testCase({
         CSI.addLayer(adap, obj, "m", function () {
             return "variation";
         });
-        activates.push(obj.m());
+        flags.push(obj.m());
         CSI.deploy(adap);
-        activates.push(obj.m());
-        test.deepEqual(activates, ["original", "variation"]);
+        flags.push(obj.m());
+        test.deepEqual(flags, ["original", "variation"]);
 
         test.done();
     },
     'layer-method-with-return-proceed': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
@@ -224,15 +224,15 @@ module.exports = testCase({
         CSI.addLayer(adap, obj, "m", function () {
             return "variation" + "-" + Adaptation.proceed();
         });
-        activates.push(obj.m());
+        flags.push(obj.m());
         CSI.deploy(adap);
-        activates.push(obj.m());
-        test.deepEqual(activates, ["original", "variation-original"]);
+        flags.push(obj.m());
+        test.deepEqual(flags, ["original", "variation-original"]);
 
         test.done();
     },
     'layer-method-with-return-proceed-uninstall': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(-1),
             m: function () {
@@ -249,12 +249,12 @@ module.exports = testCase({
         CSI.addLayer(adap, obj, "m", function () {
             return "variation" + "-" + Adaptation.proceed();
         });
-        activates.push(obj.m());
+        flags.push(obj.m());
         CSI.deploy(adap);
-        activates.push(obj.m());
+        flags.push(obj.m());
         obj.x.value = 0;
-        activates.push(obj.m());
-        test.deepEqual(activates, ["original", "variation-original", "original"]);
+        flags.push(obj.m());
+        test.deepEqual(flags, ["original", "variation-original", "original"]);
 
         test.done();
     }

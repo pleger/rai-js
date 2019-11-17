@@ -31,6 +31,8 @@ class CSI {
 
     undeploy(originalAdap) {
         this._uninstallVariations(originalAdap);
+        this._cleanSignalComposition(originalAdap);
+
         this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
             return adap.__original__ !== originalAdap;
         });
@@ -142,6 +144,14 @@ class CSI {
         this._variations = this._variations.filter(function (variation) {
             return originalAdap !== variation[0];
         });
+    }
+
+    _cleanSignalComposition(originalAdap) {
+        let adap = this._adaptationsPool.find(function (adap) {
+            return adap.__original__ === originalAdap;
+        });
+
+        adap.cleanCondition();
     }
 }
 

@@ -32,7 +32,7 @@ module.exports = testCase({
         test.done();
     },
     'two-activations-2': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(0),
             y: 56,
@@ -41,14 +41,14 @@ module.exports = testCase({
         let adap1 = {
             condition: new SignalComp("a > 1"),
             enter: function() {
-                activates.push("enter-adap1");
+                flags.push("enter-adap1");
             }
         };
 
         let adap2 = {
             condition: new SignalComp("h"),
             enter: function() {
-                activates.push("enter-adap2");
+                flags.push("enter-adap2");
             }
         };
 
@@ -57,12 +57,12 @@ module.exports = testCase({
         CSI.exhibit(obj,{a: obj.x});
         CSI.exhibit(adap1,{h: adap1.condition});
         obj.x.value = 10;
-        test.deepEqual(activates, ["enter-adap1","enter-adap2"]);
+        test.deepEqual(flags, ["enter-adap1","enter-adap2"]);
 
         test.done();
     },
     'two-activations-3': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(0),
             y: new Signal(5),
@@ -71,21 +71,21 @@ module.exports = testCase({
         let adap1 = {
             condition: new SignalComp("a > 1"),
             enter: function() {
-                activates.push("enter-adap1");
+                flags.push("enter-adap1");
             }
         };
 
         let adap2 = {
             condition: new SignalComp("b > 5"),
             enter: function() {
-                activates.push("enter-adap2");
+                flags.push("enter-adap2");
             }
         };
 
         let adap3 = {
             condition: new SignalComp("h && r"),
             enter: function() {
-                activates.push("enter-adap3");
+                flags.push("enter-adap3");
             }
         };
 
@@ -98,12 +98,12 @@ module.exports = testCase({
         CSI.exhibit(adap2,{r: adap2.condition});
         obj.x.value = 10;
         obj.y.value = 100;
-        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3"]);
+        test.deepEqual(flags, ["enter-adap1","enter-adap2","enter-adap3"]);
 
         test.done();
     },
     'two-activations-4': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(0),
             y: new Signal(5),
@@ -112,30 +112,30 @@ module.exports = testCase({
         let adap1 = {
             condition: new SignalComp("a > 1"),
             enter: function() {
-                activates.push("enter-adap1");
+                flags.push("enter-adap1");
             },
             exit: function () {
-                activates.push("exit-adap1");
+                flags.push("exit-adap1");
             }
         };
 
         let adap2 = {
             condition: new SignalComp("b > 5"),
             enter: function() {
-                activates.push("enter-adap2");
+                flags.push("enter-adap2");
             },
             exit: function () {
-                activates.push("exit-adap2");
+                flags.push("exit-adap2");
             }
         };
 
         let adap3 = {
             condition: new SignalComp("h && r"),
             enter: function() {
-                activates.push("enter-adap3");
+                flags.push("enter-adap3");
             },
             exit: function () {
-                activates.push("exit-adap3");
+                flags.push("exit-adap3");
             }
         };
 
@@ -149,12 +149,12 @@ module.exports = testCase({
         obj.x.value = 10;
         obj.y.value = 100;
         obj.x.value = -1;
-        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
+        test.deepEqual(flags, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
 
         test.done();
     },
     'two-activations-5': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(0),
             y: new Signal(5),
@@ -163,30 +163,30 @@ module.exports = testCase({
         let adap1 = {
             condition: new SignalComp("a > 1"),
             enter: function() {
-                activates.push("enter-adap1");
+                flags.push("enter-adap1");
             },
             exit: function () {
-                activates.push("exit-adap1");
+                flags.push("exit-adap1");
             }
         };
 
         let adap2 = {
             condition: new SignalComp("b > 5"),
             enter: function() {
-                activates.push("enter-adap2");
+                flags.push("enter-adap2");
             },
             exit: function () {
-                activates.push("exit-adap2");
+                flags.push("exit-adap2");
             }
         };
 
         let adap3 = {
             condition: new SignalComp("h && r"),
             enter: function() {
-                activates.push("enter-adap3");
+                flags.push("enter-adap3");
             },
             exit: function () {
-                activates.push("exit-adap3");
+                flags.push("exit-adap3");
             }
         };
 
@@ -200,12 +200,12 @@ module.exports = testCase({
         obj.x.value = 10;
         obj.y.value = 100;
         obj.x.value = -1;
-        test.deepEqual(activates, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
+        test.deepEqual(flags, ["enter-adap1","enter-adap2","enter-adap3","exit-adap1","exit-adap3"]);
 
         test.done();
     },
     'two-activations-conflicts': function (test) {
-        let activates = [];
+        let flags = [];
         let obj = {
             x: new Signal(0),
             y: new Signal(0),
@@ -215,20 +215,20 @@ module.exports = testCase({
         let adap1 = {
             condition: new SignalComp("a > 1 && b > 10 && !adap2"),
             enter: function() {
-                activates.push("enter-adap1");
+                flags.push("enter-adap1");
             },
             exit: function () {
-                activates.push("exit-adap1");
+                flags.push("exit-adap1");
             }
         };
 
         let adap2 = {
             condition: new SignalComp("c > 5"),
             enter: function() {
-                activates.push("enter-adap2");
+                flags.push("enter-adap2");
             },
             exit: function () {
-                activates.push("exit-adap2");
+                flags.push("exit-adap2");
             }
         };
 
@@ -240,7 +240,7 @@ module.exports = testCase({
         obj.x.value = 10;
         obj.y.value = 100;
         obj.z.value = 10;
-        test.deepEqual(activates, ["enter-adap1","exit-adap1","enter-adap2"]);
+        test.deepEqual(flags, ["enter-adap1","exit-adap1","enter-adap2"]);
 
         test.done();
     }

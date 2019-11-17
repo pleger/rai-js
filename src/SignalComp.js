@@ -38,6 +38,10 @@ class SignalComp {
         return this._value;
     }
 
+    get expression () {
+        return this._expression;
+    }
+
     get timestamp() {
         return this._timestamp;
     }
