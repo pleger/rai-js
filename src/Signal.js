@@ -7,6 +7,7 @@ class Signal {
         this._id = id || "_"; //it means does have an identifier
         this._subcribers = [];
 
+        this._lastVal = undefined;
         this.value = initialValue;
     }
 
@@ -27,9 +28,12 @@ class Signal {
     }
 
     set value(val) {
-        this._val = val;
-        this._timestamp = performance();
-        this._emit();
+        if (this._lastVal !== val) {
+            this._val = val;
+            this._timestamp = performance();
+            this._emit();
+            this._lastVal = this._val;
+        }
     }
 
     on(subscriber) {

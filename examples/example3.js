@@ -18,22 +18,14 @@ let landscape = {
     condition: new SignalComp("gyroLevel > 45"),
     enter: function () {
         screen.rotate();
-    },
-    exit: function() {
-        show("land is over")
     }
-
 };
 
 let portrait = {
     condition: new SignalComp("landscape == false && playMovie == false"),
     enter: function () {
         screen.rotate();
-    },
-    exit: function () {
-        show("portrait is over");
     }
-
 };
 
 CSI.exhibit(screen, {gyroLevel: screen.gyroscope});
@@ -50,6 +42,7 @@ CSI.addLayer(portrait, playerView, "draw", function () {
     show("[PORTRAIT-LAYER] Portrait");
     Adaptation.proceed();
 });
+
 
 CSI.deploy(landscape);
 CSI.deploy(portrait);

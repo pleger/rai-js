@@ -55,5 +55,4 @@ module.exports = testCase({
 
         test.done();
     }
-
 });

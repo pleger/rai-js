@@ -69,7 +69,6 @@ class Adaptation {
     enableCondition() {
         let thiz = this;
         this._cond.on(function (active) {
-
             if (active !== thiz._active) {
                 thiz._active = active;
                 if (thiz._active) {

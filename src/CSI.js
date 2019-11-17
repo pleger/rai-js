@@ -14,12 +14,12 @@ class CSI {
     init() {
         this._adaptationsPool = []; //only adaptations
         this._signalInterfacePool = []; //objects x interface-object
-        this._variations = []; //adap x object x methodName x variations
+        this._variations = []; //originalAdap x object x methodName x variation
         this._originalMethods = []; //object x name x original_method
     }
 
-    deploy(adap) {
-        adap = new Adaptation(adap);
+    deploy(originalAdap) {
+        let adap = new Adaptation(originalAdap);
         adap._name = adap._name !== "_" ? adap._name : "Adaptation_" + (this._adaptationsPool.length + 1);
 
         this._adaptationsPool.push(adap);
@@ -34,7 +34,6 @@ class CSI {
         this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
             return adap.__original__ !== originalAdap;
         });
-        this._removingLayers(originalAdap);
     }
 
     _addSavedLayers(adap) {
@@ -61,26 +60,14 @@ class CSI {
         });
     }
 
-    _removingLayers(originalAdap) {
-        this._variations = this._variations.filter(function (variation) {
-            return originalAdap !== variation[0];
-        });
-    }
-
-    exhibit(objects, signalInterface) {
-        objects = !Array.isArray(objects) ? [objects] : objects.length === 0 ? [{}] : objects;
-
-        let thiz = this;
-        objects.forEach(function (object) {
-            thiz._addSignalInterface(object, signalInterface);
-        });
-
+    exhibit(object, signalInterface) {
+        this._addSignalInterface(object, signalInterface);
         this._addIdSignal(signalInterface);
         this._exhibitAnInterface(signalInterface);
     }
 
-    addLayer(adap, obj, methodName, variation) {
-        this._variations.push([adap, obj, methodName, variation]);
+    addLayer(originalAdadp, obj, methodName, variation) {
+        this._variations.push([originalAdadp, obj, methodName, variation]);
     }
 
     _receiveSignalsForSignalInterfaces(adap) {
@@ -150,6 +137,12 @@ class CSI {
             return !adaptation.isActive()
         })
     };
+
+    _removingLayers(originalAdap) {
+        this._variations = this._variations.filter(function (variation) {
+            return originalAdap !== variation[0];
+        });
+    }
 }
 
 module.exports = new CSI();
