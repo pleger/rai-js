@@ -8,12 +8,12 @@ let screen = {
 };
 
 let playerView = {
-    kind: new Signal("video camara"),
     draw: function () {
         show("Showing a Movie");
     }
 };
 
+//Creating two adaptations
 let landscape = {
     condition: new SignalComp("gyroLevel > 45"),
     enter: function () {
@@ -22,19 +22,20 @@ let landscape = {
 };
 
 let portrait = {
-    condition: new SignalComp("!landscape && kindMovie == 'FULL_MOVIE'"),
+    condition: new SignalComp("landscape == false"),
     enter: function () {
         screen.rotate();
     }
 };
+// End Adaptations
 
 
 CSI.exhibit(screen, {gyroLevel: screen.gyroscope});
-CSI.exhibit(playerView, {kindMovie: playerView.kind});
 CSI.exhibit(landscape, {landscape: landscape.condition});
 
+//Adding two layers
 CSI.addLayer(landscape, playerView, "draw", function () {
-    show("[LANDSCAPE-LAYER] Lanscape Mode");
+    show("[LANDSCAPE-LAYER] Landscape Mode");
     Adaptation.proceed();
 });
 
@@ -52,6 +53,5 @@ show("\n-Change SmartPhone position");
 screen.gyroscope.value = 100;
 playerView.draw();
 
-screen.gyroscope.value = 10;
-playerView.kind.value = 'FULL_MOVIE';
+screen.gyroscope.value = 10; //Landscape is over!!!!
 playerView.draw();

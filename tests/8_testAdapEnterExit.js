@@ -8,14 +8,14 @@ module.exports = testCase({
         test();
     },
     'enter_exit-1': function (test) {
-        let lactivation = [];
+        let flags = [];
 
         let adap = {
             enter: function () {
-                lactivation.push("enter");
+                flags.push("enter");
             },
             exit: function () {
-                lactivation.push("exit");
+                flags.push("exit");
             },
             condition: "a > 10"
         };
@@ -28,17 +28,17 @@ module.exports = testCase({
 
         CSI.exhibit(obj,{a: obj.x});
 
-        test.deepEqual(lactivation, []);
+        test.deepEqual(flags, []);
         test.done();
     },
     'enter_exit-2': function (test) {
-        let lactivation = [];
+        let flags = [];
         let adap = {
             enter: function () {
-                lactivation.push("enter");
+                flags.push("enter");
             },
             exit: function () {
-                lactivation.push("exit");
+                flags.push("exit");
             },
             condition: "a > 10"
         };
@@ -51,17 +51,17 @@ module.exports = testCase({
         CSI.exhibit(obj,{a: obj.x});
         obj.x.value = 20;
 
-        test.deepEqual(lactivation, ["enter"]);
+        test.deepEqual(flags, ["enter"]);
         test.done();
     },
     'enter_exit-3': function (test) {
-        let lactivation = [];
+        let flags = [];
         let adap = {
             enter: function () {
-                lactivation.push("enter");
+                flags.push("enter");
             },
             exit: function () {
-                lactivation.push("exit");
+                flags.push("exit");
             },
             condition: "a > 10"
         };
@@ -75,17 +75,17 @@ module.exports = testCase({
         obj.x.value = 20;
         obj.x.value = 5;
 
-        test.deepEqual(lactivation, ["enter", "exit"]);
+        test.deepEqual(flags, ["enter", "exit"]);
         test.done();
     },
     'enter_exit-4': function (test) {
-        let lactivation = [];
+        let flags = [];
         let adap = {
             enter: function () {
-                lactivation.push("enter");
+                flags.push("enter");
             },
             exit: function () {
-                lactivation.push("exit");
+                flags.push("exit");
             },
             condition: "a > 10"
         };
@@ -99,17 +99,17 @@ module.exports = testCase({
         obj.x.value = 20;
         obj.x.value = 1000;
 
-        test.deepEqual(lactivation, ["enter"]);
+        test.deepEqual(flags, ["enter"]);
         test.done();
     },
     'enter_exit-5': function (test) {
-        let lactivation = [];
+        let flags = [];
         let adap = {
             enter: function () {
-                lactivation.push("enter");
+                flags.push("enter");
             },
             exit: function () {
-                lactivation.push("exit");
+                flags.push("exit");
             },
             condition: "a > 10"
         };
@@ -125,7 +125,7 @@ module.exports = testCase({
         obj.x.value = 50;
         obj.x.value = 150;
 
-        test.deepEqual(lactivation, ["enter","exit","enter"]);
+        test.deepEqual(flags, ["enter","exit","enter"]);
         test.done();
     }
 });

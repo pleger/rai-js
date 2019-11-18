@@ -7,29 +7,28 @@ let screen = {
     }
 };
 
-
 let playerView = {
     draw: function () {
         show("Showing a Movie");
     }
 };
 
+//adaptation
 let landscape = {
     condition: "gyroLevel > 45",
     enter: function () {
+        console.log("ENTER TRANSITION");
         screen.rotate();
     }
 };
 
 
-CSI.exhibit(screen,
-    {gyroLevel: screen.gyroscope});
-
+CSI.exhibit(screen, {gyroLevel: screen.gyroscope});
 
 CSI.addLayer(landscape, playerView, "draw",
     function () {
         Adaptation.proceed();
-        show("[LAYER] Lanscape Mode")
+        show("[LAYER] Landscape Mode");
     }
 );
 
