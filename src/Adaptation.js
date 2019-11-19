@@ -1,4 +1,3 @@
-let logger = require('../libs/logger');
 const SignalComp = require('./SignalComp');
 
 //Just avoid write many times an empty function

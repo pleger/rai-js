@@ -1,4 +1,3 @@
-let logger = require('../libs/logger');
 let Adaptation = require('./Adaptation');
 
 class CSI {

@@ -1,4 +1,3 @@
-let logger = require('../libs/logger');
 const performance = require('performance-now');
 
 class Signal {
