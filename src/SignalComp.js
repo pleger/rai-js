@@ -1,21 +1,5 @@
+const expInter = require('./ExpressionInterpreter');
 const performance = require('performance-now');
-
-function _evaluateCondition(expresion, contextObj) {
-    let result;
-    try {
-        with (contextObj) {
-            result = eval(expresion);
-        }
-    } catch (error) {
-        if (error instanceof ReferenceError) {
-            //console.log(["ERROR:", error]);
-            return false; //return false when it is not possible to evaluate
-        } else {
-            throw error; //other error
-        }
-    }
-    return result;
-}
 
 class SignalComp {
 
@@ -92,7 +76,7 @@ class SignalComp {
 
     evaluate() { //this method replaces set value
         let evalContext = this._prepareConditionContext();
-        this._value = _evaluateCondition(this._expression, evalContext);
+        this._value = expInter(this._expression, evalContext);
         this._timestamp = performance();
 
         if (this._value !== this._lastVal) {
