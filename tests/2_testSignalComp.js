@@ -38,6 +38,13 @@ module.exports = testCase({
 
         test.done();
     },
+    'undefined variables-2': function (test) {
+        let cond = new signalComp("true && a > 10", [new Signal(10, 'b')]);
+
+        test.equal(cond.evaluate(), false);
+
+        test.done();
+    },
     'multiple condition': function (test) {
         let s1 = new Signal(0, "a");
         let cond1 = new signalComp("a > 10", [s1]);

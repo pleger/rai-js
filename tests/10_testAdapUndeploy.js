@@ -1,7 +1,6 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
 const SignalComp = require('../src/SignalComp');
-const Adaptation = require('../src/Adaptation');
 const CSI = require('../src/CSI');
 
 module.exports = testCase({

@@ -5,9 +5,15 @@ function StateMachineParser(exp) {
 }
 
 StateMachineParser.getSMExp = function (exp) {
-    return exp.match(/\$.*?\$/g).map(function (result) {
-        return result.substring(1, result.length - 1);
-    });
+    let results = exp.match(/\$.*?\$/g);
+    if (results !== null) {
+        results = results.map(function (result) {
+            return result.substring(1, result.length - 1);
+        });
+    } else {
+        results = [];
+    }
+    return results;
 };
 
 StateMachineParser.removeSMExp = function (exp) {

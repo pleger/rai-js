@@ -1,6 +1,6 @@
 const SignalComp = require('./SignalComp');
 
-//Just avoid write many times an empty function
+//Just avoid writing many times an empty function
 let emptyFunction = function () {
 };
 
@@ -34,7 +34,7 @@ class Adaptation {
         return this._cond;
     }
 
-    cleanCondition() {
+    cleanCondition() { //this method is reused when you re-init the condition
         this._cond = new SignalComp(this._cond.expression);
     }
 
@@ -69,7 +69,7 @@ class Adaptation {
         });
     }
 
-    enableCondition() {
+    enableCondition() { //todo: when a condition is added, Should it check its predicate?
         let thiz = this;
         this._cond.on(function (active) {
             if (active !== thiz._active) {

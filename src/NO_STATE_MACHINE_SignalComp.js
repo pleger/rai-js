@@ -1,26 +1,14 @@
-const SMP = require('./StateMachineParser');
 const expInter = require('./ExpressionInterpreter');
 const performance = require('performance-now');
 
-let SM_NAME = "__SM__";
-let SM_OBJECT_CONTEXT = "objectContext";
-
-class SignalCompSM {
+class NO_STATE_MACHINE_SignalComp {
 
     constructor(expression, signals, id) {
         this._expression = expression;
-        this._signals = signals || [];
+        this._signals = signals ||  [];
         this._id = id || "_"; //used to emit
 
         this._subscribers = [];
-
-        //to support state machine
-        this._sms = SMP.getSMExp(expression).map(function (smexp) {
-            return SMP.createFromExp(smexp);
-        });
-        this._expression = SMP.replaceSmexpWithSM(this._expression, this._sms, SM_NAME, SM_OBJECT_CONTEXT);
-        //end of support
-
         this._enableSignals();
         this._lastVal = undefined;
     }
@@ -29,11 +17,11 @@ class SignalCompSM {
         return this._id;
     }
 
-    get value() {
+    get value () {
         return this._value;
     }
 
-    get expression() {
+    get expression () {
         return this._expression;
     }
 
@@ -88,7 +76,6 @@ class SignalCompSM {
 
     evaluate() { //this method replaces set value
         let evalContext = this._prepareConditionContext();
-        evalContext = this._addingStateMachine(evalContext);
         this._value = expInter(this._expression, evalContext);
         this._timestamp = performance();
 
@@ -100,18 +87,9 @@ class SignalCompSM {
         return this._value;
     }
 
-    _addingStateMachine(obj) {
-        this._sms.forEach(function (sm, index) {
-            obj[SM_NAME + index] = sm;
-        });
-
-        obj[SM_OBJECT_CONTEXT] = obj;
-        return obj;
-    };
-
     _prepareConditionContext() {
         this._signals.sort(function (sa, sb) {
-            return sa.timestamp - sb.timestamp;
+           return sa.timestamp - sb.timestamp;
         });
 
         let obj = {}; //object context
@@ -123,4 +101,4 @@ class SignalCompSM {
     }
 }
 
-module.exports = SignalCompSM;
+module.exports = NO_STATE_MACHINE_SignalComp;

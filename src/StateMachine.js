@@ -4,16 +4,18 @@ function StateMachine(exp, smexp) {
     let tst = [exp];
     let resultSM = false;
 
-    let sm = function(sym) {
+    let sm = function(inputs) {
         tst = tst.filter(el => el !== true);
-        tst = tst.map(st => st(sym));
+        tst = tst.map(function(st) {
+            return st(inputs);
+        });
 
         if (resultSM === true) {
-            let first = exp(sym);
+            let first = exp(inputs);
             if (first !== exp) {
                 resultSM = false;
+                tst.push(first);
             }
-            tst.push(first);
         }
 
         resultSM = resultSM || tst.some(val => val === true);
@@ -24,11 +26,11 @@ function StateMachine(exp, smexp) {
       sm.contextObject = obj;
     };
 
-    sm.expression = smexp || "_";
+    sm.expression = smexp || "_"; // it is just used to debugging
     return sm;
 }
 
-//it is only for tests
+//this method is used only for tests
 StateMachine.sym = function (id) {
     return function innerSym(s) {
         return s === id ? true : innerSym;

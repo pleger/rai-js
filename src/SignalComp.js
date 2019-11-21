@@ -1,14 +1,27 @@
+const SMP = require('./StateMachineParser');
 const expInter = require('./ExpressionInterpreter');
 const performance = require('performance-now');
+
+let SM_NAME = "__SM__";
+let SM_OBJECT_CONTEXT = "objectContext";
 
 class SignalComp {
 
     constructor(expression, signals, id) {
-        this._expression = expression;
-        this._signals = signals ||  [];
+        this._expression = expression; //it is a parsed expression
+        this._signals = signals || [];
         this._id = id || "_"; //used to emit
 
         this._subscribers = [];
+
+        //to support state machine
+        this._originalExpression = expression; //conserving state machine process variables
+        this._sms = SMP.getSMExp(expression).map(function (smexp) {
+            return SMP.createFromExp(smexp);
+        });
+        this._expression = SMP.replaceSmexpWithSM(this._expression, this._sms, SM_NAME, SM_OBJECT_CONTEXT);
+        //end of state machine support
+
         this._enableSignals();
         this._lastVal = undefined;
     }
@@ -17,11 +30,11 @@ class SignalComp {
         return this._id;
     }
 
-    get value () {
+    get value() {
         return this._value;
     }
 
-    get expression () {
+    get expression() {
         return this._expression;
     }
 
@@ -34,7 +47,7 @@ class SignalComp {
     }
 
     _isInExpression(id) {
-        let exp = this._expression;
+        let exp = this._originalExpression;
         let variables = exp.match(/[a-zA-Z][a-zA-Z0-9_+-]*/g);
         return variables.indexOf(id) >= 0;
     }
@@ -76,6 +89,7 @@ class SignalComp {
 
     evaluate() { //this method replaces set value
         let evalContext = this._prepareConditionContext();
+        evalContext = this._addingStateMachine(evalContext);
         this._value = expInter(this._expression, evalContext);
         this._timestamp = performance();
 
@@ -87,9 +101,18 @@ class SignalComp {
         return this._value;
     }
 
+    _addingStateMachine(obj) {
+        this._sms.forEach(function (sm, index) {
+            obj[SM_NAME + index] = sm;
+        });
+
+        obj[SM_OBJECT_CONTEXT] = obj;
+        return obj;
+    };
+
     _prepareConditionContext() {
         this._signals.sort(function (sa, sb) {
-           return sa.timestamp - sb.timestamp;
+            return sa.timestamp - sb.timestamp;
         });
 
         let obj = {}; //object context
