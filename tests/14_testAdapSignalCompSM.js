@@ -299,8 +299,11 @@ module.exports = testCase({
         flags.push(obj.m());
         obj.x.value = true;
         flags.push(obj.m());
+        obj.t.value = false;
+        obj.t.value = true;
+        flags.push(obj.m());
 
-        test.deepEqual(flags, ["original", "variation", "original"]);
+        test.deepEqual(flags, ["original", "variation", "original", "original"]);
         test.done();
     },
     'SM-with-other-expressions': function (test) {

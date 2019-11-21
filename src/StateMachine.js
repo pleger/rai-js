@@ -4,18 +4,22 @@ function StateMachine(exp, smexp) {
     let tst = [exp];
     let resultSM = false;
 
-    let sm = function(inputs) {
+    let sm = function (inputs) {
         tst = tst.filter(el => el !== true);
-        tst = tst.map(function(st) {
+        tst = tst.map(function (st) {
             return st(inputs);
         });
 
+        let first = exp(inputs);
+
         if (resultSM === true) {
-            let first = exp(inputs);
+            tst = [exp];
             if (first !== exp) {
                 resultSM = false;
-                tst.push(first);
             }
+        }
+        if (first !== exp) {
+            tst.push(first);
         }
 
         resultSM = resultSM || tst.some(val => val === true);
@@ -23,7 +27,7 @@ function StateMachine(exp, smexp) {
     };
 
     sm.addingContextObject = function (obj) {
-      sm.contextObject = obj;
+        sm.contextObject = obj;
     };
 
     sm.expression = smexp || "_"; // it is just used to debugging
@@ -39,14 +43,14 @@ StateMachine.sym = function (id) {
 
 StateMachine.exp = function (expression) {
     return function innerExp(contextObj) {
-        return expInter(expression, contextObj) === true? true: innerExp;
+        return expInter(expression, contextObj) === true ? true : innerExp;
     }
 };
 
 StateMachine.seq = function (l1, l2) {
     return function innerSeq(s) {
         let r = l1(s);
-        return r === true ? l2 : r === l1? innerSeq : StateMachine.seq(r, l2);
+        return r === true ? l2 : r === l1 ? innerSeq : StateMachine.seq(r, l2);
     }
 };
 
@@ -61,7 +65,7 @@ StateMachine.or = function (l1, l2) {
         let r1 = l1(s);
         let r2 = l2(s);
 
-        return r1 === true || r2 === true ? true : r1 === l1 && r2 === l2? innerOr :StateMachine.or(r1, r2);
+        return r1 === true || r2 === true ? true : r1 === l1 && r2 === l2 ? innerOr : StateMachine.or(r1, r2);
     }
 };
 

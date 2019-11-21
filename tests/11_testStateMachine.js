@@ -18,21 +18,21 @@ module.exports = testCase({
     'symA': function (test) {
         let sm = SM(SM.sym("a")); //a
         test.equal(sm("a"), true);
-        test.equal(sm("b"), true); //because of the (single) semantics!!
+        test.equal(sm("b"), true);
 
         test.done();
     },
     'seqAB': function (test) {
-        let sm = SM(SM.seq(SM.sym("a"),SM.sym("b"))); //a->b
+        let sm = SM(SM.seq(SM.sym("a"), SM.sym("b"))); //a->b
         test.equal(sm("a"), false);
         test.equal(sm("a"), false);
         test.equal(sm("c"), false);
         test.equal(sm("b"), true);
-        test.equal(sm("b"), true); //because of the (single) semantics!!
+        test.equal(sm("b"), true); //starting again
 
         test.done();
-    },'seqAccccB': function (test) {
-        let sm = SM(SM.seq(SM.sym("a"),SM.sym("b"))); //a->b
+    }, 'seqAccccB': function (test) {
+        let sm = SM(SM.seq(SM.sym("a"), SM.sym("b"))); //a->b
         test.equal(sm("a"), false);
         test.equal(sm("c"), false);
         test.equal(sm("c"), false);
@@ -42,7 +42,7 @@ module.exports = testCase({
         test.done();
     },
     'seqAB-twice': function (test) {
-        let sm = SM(SM.seq(SM.sym("a"),SM.sym("b"))); //a -> b
+        let sm = SM(SM.seq(SM.sym("a"), SM.sym("b"))); //a -> b
         test.equal(sm("a"), false);
         test.equal(sm("a"), false);
         test.equal(sm("b"), true);
@@ -53,7 +53,7 @@ module.exports = testCase({
         test.done();
     },
     'OrAB': function (test) {
-        let sm = SM(SM.or(SM.sym("a"),SM.sym("b"))); //a||b
+        let sm = SM(SM.or(SM.sym("a"), SM.sym("b"))); //a||b
         test.equal(sm("a"), true);
         test.equal(sm("b"), true);
         test.equal(sm("c"), true); //because of the (single) semantics!!
