@@ -4,12 +4,13 @@ let smartPhone = {
     isInHouse: new Signal(false),
 };
 
+
 let kitchen = {
     time: new Signal(1200),
+    isLightTurnOn: new Signal(false),
     turnOnTeapot: function () {
         show("Teapot is turning on");
-    },
-    isLightTurnOn: new Signal(false)
+    }
 };
 
 let welcomeHome = {

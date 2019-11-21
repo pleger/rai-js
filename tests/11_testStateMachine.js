@@ -109,7 +109,7 @@ module.exports = testCase({
         test.done();
     },
     'seq-n': function (test) {
-        let sm = SM(SM.seqN([SM.sym("a"), SM.sym("b"), SM.sym("c"), SM.sym("d")])); //(a||b)->(c||d)
+        let sm = SM(SM.seqN([SM.sym("a"), SM.sym("b"), SM.sym("c"), SM.sym("d")])); //(-> a b c d)
         test.equal(sm("a"), false);
         test.equal(sm("b"), false);
         test.equal(sm("c"), false);

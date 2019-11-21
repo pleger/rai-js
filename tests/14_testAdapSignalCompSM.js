@@ -54,7 +54,7 @@ module.exports = testCase({
         obj.x.value = true;
         obj.x.value = 3;
         flags.push(obj.m());
-        test.deepEqual(flags, ["original","variation"]);
+        test.deepEqual(flags, ["original", "variation"]);
         test.done();
     },
     'onlySM-2': function (test) {
@@ -82,7 +82,35 @@ module.exports = testCase({
         flags.push(obj.m());
         obj.x.value = false;
         flags.push(obj.m());
-        test.deepEqual(flags, ["original","original","variation"]);
+        test.deepEqual(flags, ["original", "original", "variation"]);
+        test.done();
+    },
+    'onlySM-2_1': function (test) {
+        let flags = [];
+        let obj = {
+            x: new Signal(false),
+            m: function () {
+                return "original";
+            },
+        };
+
+        let adap = {
+            condition: new SignalComp("$(--> a (a == 3) (!a))$")
+        };
+
+        CSI.exhibit(obj, {a: obj.x});
+        CSI.addLayer(adap, obj, "m", function () {
+            return "variation";
+        });
+        CSI.deploy(adap);
+
+        flags.push(obj.m());
+        obj.x.value = true;
+        obj.x.value = 3;
+        flags.push(obj.m());
+        obj.x.value = false;
+        flags.push(obj.m());
+        test.deepEqual(flags, ["original", "original", "variation"]);
         test.done();
     },
     'onlySM-3': function (test) {
@@ -111,7 +139,7 @@ module.exports = testCase({
         obj.x.value = true;
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","original","variation"]);
+        test.deepEqual(flags, ["original", "original", "variation"]);
         test.done();
     },
     'onlySM-4': function (test) {
@@ -142,7 +170,7 @@ module.exports = testCase({
         obj.x.value = true; //this value is not submitted again.
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","original","variation","variation"]);
+        test.deepEqual(flags, ["original", "original", "variation", "variation"]);
         test.done();
     },
     'onlySM-5': function (test) {
@@ -173,7 +201,106 @@ module.exports = testCase({
         obj.x.value = 15; //this first state disable again!
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","original","variation","original"]);
+        test.deepEqual(flags, ["original", "original", "variation", "original"]);
+        test.done();
+    },
+    'onlySM-6': function (test) {
+        let flags = [];
+        let obj = {
+            x: new Signal(false),
+            m: function () {
+                return "original";
+            },
+        };
+
+        let adap = {
+            condition: new SignalComp("$(+ (a > 5) )$")
+        };
+
+        CSI.exhibit(obj, {a: obj.x});
+        CSI.addLayer(adap, obj, "m", function () {
+            return "variation";
+        });
+        CSI.deploy(adap);
+
+        flags.push(obj.m());
+        obj.x.value = 7;
+        obj.x.value = 8;
+        flags.push(obj.m());
+        obj.x.value = 12;
+        flags.push(obj.m());
+        obj.x.value = 3;
+        flags.push(obj.m());
+        obj.x.value = 9;
+        flags.push(obj.m());
+        obj.x.value = 1;
+        flags.push(obj.m());
+
+        test.deepEqual(flags, ["original", "original", "original", "variation", "original", "variation"]);
+        test.done();
+    },
+    'onlySM-7': function (test) {
+        let flags = [];
+        let obj = {
+            t: new Signal(false),
+            x: new Signal(false),
+            y: new Signal(false),
+            z: new Signal(false),
+            m: function () {
+                return "original";
+            },
+        };
+
+        let adap = {
+            condition: new SignalComp("$(|| (-> a b) (-> c d)$")
+        };
+
+        CSI.exhibit(obj, {a: obj.t, b: obj.x, c: obj.y, d: obj.z});
+        CSI.addLayer(adap, obj, "m", function () {
+            return "variation";
+        });
+        CSI.deploy(adap);
+        flags.push(obj.m());
+        obj.t.value = true;
+        obj.x.value = true;
+        flags.push(obj.m());
+        obj.y.value = true;
+        flags.push(obj.m());
+        obj.z.value = true;
+        flags.push(obj.m());
+
+        test.deepEqual(flags, ["original", "variation", "original", "variation"]);
+        test.done();
+    },
+    'onlySM-8': function (test) {
+        let flags = [];
+        let obj = {
+            t: new Signal(false),
+            x: new Signal(false),
+            y: new Signal(false),
+            z: new Signal(false),
+            m: function () {
+                return "original";
+            },
+        };
+
+        let adap = {
+            condition: new SignalComp("$(|| (-> a b) (-> a d)$")
+        };
+
+        CSI.exhibit(obj, {a: obj.t, b: obj.x, c: obj.y, d: obj.z});
+        CSI.addLayer(adap, obj, "m", function () {
+            return "variation";
+        });
+        CSI.deploy(adap);
+        flags.push(obj.m());
+        obj.t.value = true;
+        obj.z.value = true;
+        flags.push(obj.m());
+        obj.x.value = true;
+        flags.push(obj.m());
+
+        test.deepEqual(flags, ["original", "variation", "original"]);
         test.done();
     },
     'SM-with-other-expressions': function (test) {
@@ -203,7 +330,7 @@ module.exports = testCase({
         obj.x.value = 11;
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","variation"]);
+        test.deepEqual(flags, ["original", "variation"]);
         test.done();
     },
     'SM-with-other-expressions-AND-EFFECT': function (test) {
@@ -233,7 +360,7 @@ module.exports = testCase({
         obj.y.value = 2; //SM never was evaluated because of '&&' operator
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","original"]);
+        test.deepEqual(flags, ["original", "original"]);
         test.done();
     },
     'SM-with-other-expressions-AND-EFFECT-2': function (test) {
@@ -262,7 +389,7 @@ module.exports = testCase({
         obj.y.value = 2;
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","variation"]);
+        test.deepEqual(flags, ["original", "variation"]);
         test.done();
     },
     'SM-with-other-expressions-OR-Effect': function (test) {
@@ -292,7 +419,7 @@ module.exports = testCase({
         obj.y.value = 2;
         flags.push(obj.m());
 
-        test.deepEqual(flags, ["original","variation"]);
+        test.deepEqual(flags, ["original", "variation"]);
         test.done();
     }
 });
