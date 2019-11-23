@@ -4,7 +4,6 @@ let smartPhone = {
     isInHouse: new Signal(false),
 };
 
-
 let kitchen = {
     time: new Signal(1200),
     isLightTurnOn: new Signal(false),
