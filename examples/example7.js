@@ -5,6 +5,7 @@ let smartWatch = {
     time: new Signal(1200),
 };
 
+
 let airConditioner = {
     _temperature: 0,
     adjustTemperature: function (val) {
@@ -20,16 +21,17 @@ let musicPlayer = {
 };
 
 let sleepMode = {
-    condition: new SignalComp("$(--> awake awake awake)$ && sleepTime > 0 && sleepTime < 700 "),
+    condition: new SignalComp("$(--> awake awake (+ awake))$ && sleepTime > 0 && sleepTime < 700 "),
     enter: function() {
         airConditioner.adjustTemperature(26);
         musicPlayer.makeSleepNoise();
     },
     exit: function () {
-        show("see the current systems")
+        show("see the current state system");
     }
-
 };
+
+
 
 CSI.exhibit(smartWatch, {sleepTime: smartWatch.time, awake: smartWatch.isAwake});
 CSI.deploy(sleepMode);
@@ -40,6 +42,7 @@ smartWatch.isAwake.value = false;
 smartWatch.isAwake.value = true;
 smartWatch.isAwake.value = false;
 smartWatch.isAwake.value = true;
+smartWatch.isAwake.value = false;
 
 
 
