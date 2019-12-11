@@ -52,9 +52,14 @@ class SignalComp {
         return variables.indexOf(id) >= 0;
     }
 
+    addSignals(signals) {
+        let thiz = this;
+        signals.forEach(signal => thiz.addSignal(signal));
+    }
+
     addSignal(signal) {
-        //if prevents of reentrancy issues (A in A, A in [A], A in B && B in A)
-        if (this !== signal && !this._signals.includes(signal) && this._isInExpression(signal.id)) {
+        //if prevents of reentrancy issues (A in A, A in B && B in A)
+        if (this._isInExpression(signal.id)) {
             this._signals.push(signal);
             this._enableSignal(signal);
         }
@@ -93,9 +98,14 @@ class SignalComp {
         this._value = expInter(this._expression, evalContext);
         this._timestamp = performance();
 
+        //console.log("\n------------");
+        //console.log("EVALUATE:" + this._value + "--" + this._lastVal + " exp:"+this._originalExpression);
         if (this._value !== this._lastVal) {
-            this._emit();
+            // console.log("UNA VEZ:" + this._value+ "--"+this._lastVal);
             this._lastVal = this._value;
+            //    console.log("UNA VEZ (((2))):" + this._value+ "--"+this._lastVal);
+            this._emit();
+            //      console.log("LLEGO ACÁ:" + this._originalExpression);
         }
 
         return this._value;
@@ -116,6 +126,7 @@ class SignalComp {
         });
 
         let obj = {}; //object context
+        if (this._id !== "_") obj[this._id] = this.value;
         for (let i = 0; i < this._signals.length; ++i) {
             let signal = this._signals[i];
             obj[signal.id] = signal.value;

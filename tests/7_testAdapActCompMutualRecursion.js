@@ -34,13 +34,13 @@ module.exports = testCase({
         let flags = [];
         let x = new Signal(0);
         let adap1 = {
-            condition: new SignalComp("a > 5 && !h"), enter: function () {
-                flags.push("adap1")
+            condition: new SignalComp("a > 5"), enter: function () {
+                flags.push("adap1");
             }
         };
         let adap2 = {
             condition: new SignalComp("a < 10 && r"), enter: function () {
-                flags.push("adap2")
+                flags.push("adap2");
             }
         };
 
