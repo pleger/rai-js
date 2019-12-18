@@ -1,5 +1,5 @@
-# csi-js
-CSI-JS: Context-Oriented Programming with Signal Interface for JavaScript (https://github.com/pleger/csi-js)
+# rai-js
+RAI-JS: Context-Oriented Programming with Signal Interface for JavaScript (https://github.com/pleger/rai-js)
 
 This JavaScript library allows developers to support Context-Oriented Programming with Signal Interfaces for JavaScript.
 
@@ -7,4 +7,4 @@ This JavaScript library allows developers to support Context-Oriented Programmin
 License
 ----
 
-MIT
+[MIT](https://en.wikipedia.org/wiki/MIT_License)
