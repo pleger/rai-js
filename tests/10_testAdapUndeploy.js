@@ -1,7 +1,7 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
 const SignalComp = require('../src/SignalComp');
-const CSI = require('../src/CSI');
+const CSI = require('../src/RAI');
 
 module.exports = testCase({
     'setUp': function (test) {
@@ -23,7 +23,7 @@ module.exports = testCase({
 
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         flags.push(obj.m());
@@ -50,7 +50,7 @@ module.exports = testCase({
 
         obj.x.value = 10;
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         flags.push(obj.m());

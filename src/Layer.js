@@ -4,7 +4,7 @@ const SignalComp = require('./SignalComp');
 let emptyFunction = function () {
 };
 
-class Adaptation {
+class Layer {
 
     constructor(adap) {
         this._cond = adap.condition === undefined ?
@@ -50,11 +50,11 @@ class Adaptation {
             let originalMethod = variation[3];
 
             obj[methodName] = function () {
-                Adaptation.proceed = function () {
+                Layer.proceed = function () {
                     return originalMethod.apply(obj, arguments);
                 };
                 let result = variationMethod.apply(obj, arguments);
-                Adaptation.proceed = undefined;
+                Layer.proceed = undefined;
                 return result;
             };
         });
@@ -94,6 +94,6 @@ class Adaptation {
     }
 }
 
-module.exports = Adaptation;
+module.exports = Layer;
 
 

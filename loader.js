@@ -1,5 +1,5 @@
-const CSI = require('./src/CSI');
-const Adaptation = require('./src/Adaptation');
+const CSI = require('./src/RAI');
+const Adaptation = require('./src/Layer');
 const Signal =  require('./src/Signal');
 const SignalComp = require('./src/SignalComp');
 

@@ -25,7 +25,7 @@ let landscape = {
 
 CSI.exhibit(screen, {gyroLevel: screen.gyroscope});
 
-CSI.addLayer(landscape, playerView, "draw",
+CSI.addPartialMethod(landscape, playerView, "draw",
     function () {
         Adaptation.proceed();
         show("[LAYER] Landscape Mode");

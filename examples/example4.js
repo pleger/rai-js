@@ -42,12 +42,12 @@ CSI.exhibit(playerView, {kindMovie: playerView.kind});
 CSI.exhibit(landscape, {landscape: landscape.condition});
 
 //Adding two layers
-CSI.addLayer(landscape, playerView, "draw", function () {
+CSI.addPartialMethod(landscape, playerView, "draw", function () {
     show("[LANDSCAPE-LAYER] Lanscape Mode");
     Adaptation.proceed();
 });
 
-CSI.addLayer(portrait, playerView, "draw", function () {
+CSI.addPartialMethod(portrait, playerView, "draw", function () {
     show("[PORTRAIT-LAYER] Portrait");
     Adaptation.proceed();
 });

@@ -39,13 +39,34 @@ require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c=
 
 }).call(this,require('_process'))
 },{"_process":9}],2:[function(require,module,exports){
+
+function expressionInterpreter(expresion, contextObj) {
+    let result;
+
+    try {
+        with (contextObj) {
+            result = eval(expresion);
+        }
+    } catch (error) {
+        if (error instanceof ReferenceError) {
+            return false; //return false when it is not possible to evaluate
+        } else {
+            throw error; //other error
+        }
+    }
+    return result;
+}
+
+
+module.exports = expressionInterpreter;
+},{}],3:[function(require,module,exports){
 const SignalComp = require('./SignalComp');
 
 //Just avoid writing many times an empty function
 let emptyFunction = function () {
 };
 
-class Adaptation {
+class Layer {
 
     constructor(adap) {
         this._cond = adap.condition === undefined ?
@@ -91,11 +112,11 @@ class Adaptation {
             let originalMethod = variation[3];
 
             obj[methodName] = function () {
-                Adaptation.proceed = function () {
+                Layer.proceed = function () {
                     return originalMethod.apply(obj, arguments);
                 };
                 let result = variationMethod.apply(obj, arguments);
-                Adaptation.proceed = undefined;
+                Layer.proceed = undefined;
                 return result;
             };
         });
@@ -135,53 +156,53 @@ class Adaptation {
     }
 }
 
-module.exports = Adaptation;
+module.exports = Layer;
 
 
 
-},{"./SignalComp":6}],3:[function(require,module,exports){
-let Adaptation = require('./Adaptation');
+},{"./SignalComp":6}],4:[function(require,module,exports){
+let Layer = require('./Layer');
 
-class CSI {
+class RAI {
 
     constructor() {
-        if (!CSI.instance) {
-            CSI.instance = this;
+        if (!RAI.instance) {
+            RAI.instance = this;
             this.init();
         }
-        return CSI.instance;
+        return RAI.instance;
     }
 
     init() {
-        this._adaptationsPool = []; //only adaptations
+        this._layers = []; //only layers
         this._signalInterfacePool = []; //objects x interface-object
-        this._variations = []; //originalAdap x object x methodName x variation
+        this._variations = []; //originalLayer x object x methodName x variation
         this._originalMethods = []; //object x name x original_method
     }
 
-    deploy(originalAdap) {
-        let adap = new Adaptation(originalAdap);
-        adap._name = adap._name !== "_" ? adap._name : "Adaptation_" + (this._adaptationsPool.length + 1);
+    deploy(originalLayer) {
+        let layer = new Layer(originalLayer);
+        layer._name = layer._name !== "_" ? layer._name : "Layer_" + (this._layers.length + 1);
 
-        this._adaptationsPool.push(adap);
-        this._addSavedLayers(adap);
+        this._layers.push(layer);
+        this._addSavedLayers(layer);
 
         //it is to know if signals are already send data
-        this._receiveSignalsForSignalInterfaces(adap);
+        this._receiveSignalsForSignalInterfaces(layer);
     }
 
-    undeploy(originalAdap) {
-        this._uninstallVariations(originalAdap);
-        this._cleanSignalComposition(originalAdap);
+    undeploy(originalLayer) {
+        this._uninstallVariations(originalLayer);
+        this._cleanSignalComposition(originalLayer);
 
-        this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
-            return adap.__original__ !== originalAdap;
+        this._layers = this._layers.filter(function (layer) {
+            return layer.__original__ !== originalLayer;
         });
     }
 
-    _addSavedLayers(adap) {
+    _addSavedLayers(layer) {
         let variations = this._variations.filter(function (variation) {
-            return adap.__original__ === variation[0];
+            return layer.__original__ === variation[0];
         });
         var thiz = this;
         variations.forEach(function (variation) {
@@ -191,14 +212,14 @@ class CSI {
 
             thiz._addOriginalMethod(obj, methodName);
             let originalMethod = thiz._getOriginalMethod(obj, methodName);
-            adap.addVariation(obj, methodName, variationMethod, originalMethod);
+            layer.addVariation(obj, methodName, variationMethod, originalMethod);
         });
     }
 
-    _uninstallVariations(originalAdap) {
-        this._adaptationsPool.forEach(function (adap) {
-            if (adap.__original__ === originalAdap) {
-                adap._uninstallVariations();
+    _uninstallVariations(originalLayer) {
+        this._layers.forEach(function (layer) {
+            if (layer.__original__ === originalLayer) {
+                layer._uninstallVariations();
             }
         });
     }
@@ -209,15 +230,15 @@ class CSI {
         this._exhibitAnInterface(signalInterface);
     }
 
-    addLayer(originalAdadp, obj, methodName, variation) {
+    addPartialMethod(originalAdadp, obj, methodName, variation) {
         this._variations.push([originalAdadp, obj, methodName, variation]);
     }
 
-    _receiveSignalsForSignalInterfaces(adap) {
+    _receiveSignalsForSignalInterfaces(layer) {
         this._signalInterfacePool.forEach(function (si) {
             for (let field in si[1]) {
                 if (si[1].hasOwnProperty(field)) {
-                    adap.addSignal(si[1][field]);
+                    layer.addSignal(si[1][field]);
                 }
             }
         });
@@ -239,8 +260,8 @@ class CSI {
         for (let field in signalInterface) {
             if (signalInterface.hasOwnProperty(field)) {
 
-                this._adaptationsPool.forEach(function (adap) {
-                    adap.addSignal(signalInterface[field]);
+                this._layers.forEach(function (layer) {
+                    layer.addSignal(signalInterface[field]);
                 });
             }
         }
@@ -262,63 +283,42 @@ class CSI {
         return found === undefined? undefined: found[2];
     }
 
-    getAdaps(filter) {
+    getLayers(filter) {
         filter = filter || function () {
             return true;
         };
-        return this._adaptationsPool.filter(filter);
+        return this._layers.filter(filter);
     }
 
-    getActiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return adaptation.isActive()
+    getActiveLayers() {
+        return this.getLayers(function (layer) {
+            return layer.isActive()
         })
     };
 
-    getInactiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return !adaptation.isActive()
+    getInactiveLayers() {
+        return this.getLayers(function (layer) {
+            return !layer.isActive()
         })
     };
 
-    _removingLayers(originalAdap) {
+    _removingLayers(originalLayer) {
         this._variations = this._variations.filter(function (variation) {
-            return originalAdap !== variation[0];
+            return originalLayer !== variation[0];
         });
     }
 
-    _cleanSignalComposition(originalAdap) {
-        let adap = this._adaptationsPool.find(function (adap) {
-            return adap.__original__ === originalAdap;
+    _cleanSignalComposition(originalLayer) {
+        let layer = this._layers.find(function (layer) {
+            return layer.__original__ === originalLayer;
         });
 
-        adap.cleanCondition();
+        layer.cleanCondition();
     }
 }
 
-module.exports = new CSI();
-},{"./Adaptation":2}],4:[function(require,module,exports){
-
-function expressionInterpreter(expresion, contextObj) {
-    let result;
-
-    try {
-        with (contextObj) {
-            result = eval(expresion);
-        }
-    } catch (error) {
-        if (error instanceof ReferenceError) {
-            return false; //return false when it is not possible to evaluate
-        } else {
-            throw error; //other error
-        }
-    }
-    return result;
-}
-
-
-module.exports = expressionInterpreter;
-},{}],5:[function(require,module,exports){
+module.exports = new RAI();
+},{"./Layer":3}],5:[function(require,module,exports){
 const performance = require('performance-now');
 
 class Signal {
@@ -509,7 +509,7 @@ class SignalComp {
 }
 
 module.exports = SignalComp;
-},{"./ExpressionInterpreter":4,"./StateMachineParser":8,"performance-now":1}],7:[function(require,module,exports){
+},{"./ExpressionInterpreter":2,"./StateMachineParser":8,"performance-now":1}],7:[function(require,module,exports){
 const expInter = require('./ExpressionInterpreter');
 
 function StateMachine(exp, smexp) {
@@ -592,7 +592,7 @@ StateMachine.plus = function (l) {
 };
 
 module.exports = StateMachine;
-},{"./ExpressionInterpreter":4}],8:[function(require,module,exports){
+},{"./ExpressionInterpreter":2}],8:[function(require,module,exports){
 const SM = require('./StateMachine');
 
 function StateMachineParser(exp) {
@@ -870,9 +870,9 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],"csijs":[function(require,module,exports){
-const CSI = require('./src/CSI');
-const Adaptation = require('./src/Adaptation');
+},{}],"raijs":[function(require,module,exports){
+const CSI = require('./src/RAI');
+const Adaptation = require('./src/Layer');
 const Signal =  require('./src/Signal');
 const SignalComp = require('./src/SignalComp');
 
@@ -883,4 +883,4 @@ module.exports = {
     SignalComp: SignalComp,
     show: console.log
 }; 
-},{"./src/Adaptation":2,"./src/CSI":3,"./src/Signal":5,"./src/SignalComp":6}]},{},[]);
+},{"./src/Layer":3,"./src/RAI":4,"./src/Signal":5,"./src/SignalComp":6}]},{},[]);

@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CSI-JS</title>
+    <title>RAI-JS</title>
 </head>
 
 <!-- Using browserfy -->
-<script src="csijs.js"></script>
+<script src="raijs.js"></script>
 
 <body>
 <div id="output"> </div>
@@ -14,7 +14,7 @@
 
 <script>
     let output = document.getElementById("output");
-    let {Signal, SignalComp, Adaptation, CSI} = require("csijs");
+    let {Signal, SignalComp, Layer, RAI, show} = require("BrowserVersion/raijs");
 
     let screen = {
         gyroscope: new Signal(0),
@@ -39,17 +39,17 @@
     };
 
 
-    CSI.exhibit(screen, {gyroLevel: screen.gyroscope});
+    RAI.exhibit(screen, {gyroLevel: screen.gyroscope});
 
-    CSI.addLayer(landscape, playerView, "draw",
+    RAI.addLayer(landscape, playerView, "draw",
         function () {
-            Adaptation.proceed();
+            Layer.proceed();
             output.innerHTML += '[LAYER] Landscape Mode <br>';
         }
     );
 
 
-    CSI.deploy(landscape);
+    RAI.deploy(landscape);
     playerView.draw();
 
     output.innerHTML += '<br>Change SmartPhone position <br>';

@@ -1,7 +1,7 @@
 let testCase = require('nodeunit').testCase;
 const Signal = require('../src/Signal');
 const SignalComp = require('../src/SignalComp');
-const CSI = require('../src/CSI');
+const CSI = require('../src/RAI');
 
 
 module.exports = testCase({
@@ -23,7 +23,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x, b: obj.y});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -45,7 +45,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -71,7 +71,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -99,7 +99,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -127,7 +127,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -156,7 +156,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -187,7 +187,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -218,7 +218,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -256,7 +256,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.t, b: obj.x, c: obj.y, d: obj.z});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -289,7 +289,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.t, b: obj.x, c: obj.y, d: obj.z});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -321,7 +321,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x, b: obj.y});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -351,7 +351,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x, b: obj.y});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -381,7 +381,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x, b: obj.y});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);
@@ -410,7 +410,7 @@ module.exports = testCase({
         };
 
         CSI.exhibit(obj, {a: obj.x, b: obj.y});
-        CSI.addLayer(adap, obj, "m", function () {
+        CSI.addPartialMethod(adap, obj, "m", function () {
             return "variation";
         });
         CSI.deploy(adap);

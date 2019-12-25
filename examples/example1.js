@@ -17,7 +17,7 @@ let lowBattery = {
 };
 
 CSI.exhibit(battery, {level: battery.charge});
-CSI.addLayer(lowBattery, videoCard, "graph", function() {show("Low Performance")} );
+CSI.addPartialMethod(lowBattery, videoCard, "graph", function() {show("Low Performance")} );
 CSI.deploy(lowBattery);
 
 videoCard.graph();

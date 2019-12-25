@@ -1,45 +1,45 @@
-let Adaptation = require('./Adaptation');
+let Layer = require('./Layer');
 
-class CSI {
+class RAI {
 
     constructor() {
-        if (!CSI.instance) {
-            CSI.instance = this;
+        if (!RAI.instance) {
+            RAI.instance = this;
             this.init();
         }
-        return CSI.instance;
+        return RAI.instance;
     }
 
     init() {
-        this._adaptationsPool = []; //only adaptations
+        this._layers = []; //only layers
         this._signalInterfacePool = []; //objects x interface-object
-        this._variations = []; //originalAdap x object x methodName x variation
+        this._variations = []; //originalLayer x object x methodName x variation
         this._originalMethods = []; //object x name x original_method
     }
 
-    deploy(originalAdap) {
-        let adap = new Adaptation(originalAdap);
-        adap._name = adap._name !== "_" ? adap._name : "Adaptation_" + (this._adaptationsPool.length + 1);
+    deploy(originalLayer) {
+        let layer = new Layer(originalLayer);
+        layer._name = layer._name !== "_" ? layer._name : "Layer_" + (this._layers.length + 1);
 
-        this._adaptationsPool.push(adap);
-        this._addSavedLayers(adap);
+        this._layers.push(layer);
+        this._addSavedLayers(layer);
 
         //it is to know if signals are already send data
-        this._receiveSignalsForSignalInterfaces(adap);
+        this._receiveSignalsForSignalInterfaces(layer);
     }
 
-    undeploy(originalAdap) {
-        this._uninstallVariations(originalAdap);
-        this._cleanSignalComposition(originalAdap);
+    undeploy(originalLayer) {
+        this._uninstallVariations(originalLayer);
+        this._cleanSignalComposition(originalLayer);
 
-        this._adaptationsPool = this._adaptationsPool.filter(function (adap) {
-            return adap.__original__ !== originalAdap;
+        this._layers = this._layers.filter(function (layer) {
+            return layer.__original__ !== originalLayer;
         });
     }
 
-    _addSavedLayers(adap) {
+    _addSavedLayers(layer) {
         let variations = this._variations.filter(function (variation) {
-            return adap.__original__ === variation[0];
+            return layer.__original__ === variation[0];
         });
         var thiz = this;
         variations.forEach(function (variation) {
@@ -49,14 +49,14 @@ class CSI {
 
             thiz._addOriginalMethod(obj, methodName);
             let originalMethod = thiz._getOriginalMethod(obj, methodName);
-            adap.addVariation(obj, methodName, variationMethod, originalMethod);
+            layer.addVariation(obj, methodName, variationMethod, originalMethod);
         });
     }
 
-    _uninstallVariations(originalAdap) {
-        this._adaptationsPool.forEach(function (adap) {
-            if (adap.__original__ === originalAdap) {
-                adap._uninstallVariations();
+    _uninstallVariations(originalLayer) {
+        this._layers.forEach(function (layer) {
+            if (layer.__original__ === originalLayer) {
+                layer._uninstallVariations();
             }
         });
     }
@@ -67,15 +67,15 @@ class CSI {
         this._exhibitAnInterface(signalInterface);
     }
 
-    addLayer(originalAdadp, obj, methodName, variation) {
+    addPartialMethod(originalAdadp, obj, methodName, variation) {
         this._variations.push([originalAdadp, obj, methodName, variation]);
     }
 
-    _receiveSignalsForSignalInterfaces(adap) {
+    _receiveSignalsForSignalInterfaces(layer) {
         this._signalInterfacePool.forEach(function (si) {
             for (let field in si[1]) {
                 if (si[1].hasOwnProperty(field)) {
-                    adap.addSignal(si[1][field]);
+                    layer.addSignal(si[1][field]);
                 }
             }
         });
@@ -97,8 +97,8 @@ class CSI {
         for (let field in signalInterface) {
             if (signalInterface.hasOwnProperty(field)) {
 
-                this._adaptationsPool.forEach(function (adap) {
-                    adap.addSignal(signalInterface[field]);
+                this._layers.forEach(function (layer) {
+                    layer.addSignal(signalInterface[field]);
                 });
             }
         }
@@ -120,38 +120,38 @@ class CSI {
         return found === undefined? undefined: found[2];
     }
 
-    getAdaps(filter) {
+    getLayers(filter) {
         filter = filter || function () {
             return true;
         };
-        return this._adaptationsPool.filter(filter);
+        return this._layers.filter(filter);
     }
 
-    getActiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return adaptation.isActive()
+    getActiveLayers() {
+        return this.getLayers(function (layer) {
+            return layer.isActive()
         })
     };
 
-    getInactiveAdaps() {
-        return this.getAdaps(function (adaptation) {
-            return !adaptation.isActive()
+    getInactiveLayers() {
+        return this.getLayers(function (layer) {
+            return !layer.isActive()
         })
     };
 
-    _removingLayers(originalAdap) {
+    _removingLayers(originalLayer) {
         this._variations = this._variations.filter(function (variation) {
-            return originalAdap !== variation[0];
+            return originalLayer !== variation[0];
         });
     }
 
-    _cleanSignalComposition(originalAdap) {
-        let adap = this._adaptationsPool.find(function (adap) {
-            return adap.__original__ === originalAdap;
+    _cleanSignalComposition(originalLayer) {
+        let layer = this._layers.find(function (layer) {
+            return layer.__original__ === originalLayer;
         });
 
-        adap.cleanCondition();
+        layer.cleanCondition();
     }
 }
 
-module.exports = new CSI();
+module.exports = new RAI();

@@ -1,5 +1,5 @@
 let testCase = require('nodeunit').testCase;
-const Adaptation = require('../src/Adaptation');
+const Adaptation = require('../src/Layer');
 const signalComp = require('../src/SignalComp');
 const Signal = require('../src/Signal');
 
