@@ -877,7 +877,7 @@ const Signal =  require('./src/Signal');
 const SignalComp = require('./src/SignalComp');
 
 module.exports = {
-    CSI: CSI,
+    RAI: CSI,
     Adaptation: Adaptation,
     Signal: Signal,
     SignalComp: SignalComp,
