@@ -878,7 +878,7 @@ const SignalComp = require('./src/SignalComp');
 
 module.exports = {
     RAI: CSI,
-    Adaptation: Adaptation,
+    Layer: Adaptation,
     Signal: Signal,
     SignalComp: SignalComp,
     show: console.log
