@@ -1,20 +1,25 @@
 let {Signal, SignalComp, Adaptation, CSI, show} = require("../loader");
 const t = require('exectimer');
 const Tick = t.Tick;
+
+let repetitions = 100000;
 let samples = [];
-for (let i = 0; i <= 10; ++i) {
+
+
+
+for (let i = 0; i <= 5; ++i) {
     samples.push(i * 100);
 }
 let resultSet = [[],[],[]];
 
 function analyzeResult(results, i) {
-    resultSet[i].push(results.duration()/1000000);
-    console.log(results.duration());
+    resultSet[i].push(Math.round(results.mean()/1000000));
+    //console.log(results.duration()/1000000);
     //console.log(results.parse(results.duration())); // total duration of all ticks
     // console.log(results.parse(results.min()));      // minimal tick duration
-    // console.log(results.parse(results.max()));      // maximal tick duration
-    // console.log(results.parse(results.mean()));     // mean tick duration
-    // console.log(results.parse(results.median()));   // median tick duration
+    //console.log(results.parse(results.max()));      // maximal tick duration
+    //console.log(results.mean()/1000000);     // mean tick duration
+    //console.log(results.parse(results.median()));   // median tick duration
 }
 
 function showResults(){
@@ -44,11 +49,12 @@ function executeProfile(testID,f, cp) {
             })(long, cp);
         }
 
-        Tick.wrap("profile" + k, profile);
+        Tick.wrap("profile" + k, profile, repetitions);
         console.log("SHOW RESULTS:" + samples[k]);
         analyzeResult(t.timers["profile" + k], testID);
     }
 }
+
 
 function onlyObj() {
     let obj = {
@@ -85,22 +91,23 @@ function objWithAdaps() {
 }
 
 
-console.log("\n\nOnly objects with one signal:");
-CSI.init();
-executeProfile(0,onlyObj);
+    console.log("\n\nOnly objects with one signal:");
+    CSI.init();
+    executeProfile(0, onlyObj,function() {});
 
 console.log("\n\nIdem with signal interfaces:");
 CSI.init();
+
 executeProfile(1,objWithSIs, function () {
     CSI.deploy({condition: "ss > 5"})
-});
+},0);
 
 
 console.log("\n\nIdem with adaptations:");
 CSI.init();
 executeProfile(2,objWithAdaps, function (obj) {
     CSI.exhibit(obj, {ss: obj.s})
-});
+},0);
 
 showResults();
 
