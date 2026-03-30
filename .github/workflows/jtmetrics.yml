@@ -31,16 +31,23 @@ jobs:
       - name: Calculate metrics and write JSON
         run: |
           node --input-type=module -e "
-          import { calculateMetrics } from \"jtmetrics\";
-          import fs from \"node:fs/promises\";
+          import path from 'node:path';
+          import { calculateMetrics } from 'jtmetrics';
+          import fs from 'node:fs/promises';
+
+          const rawCodePath = process.env.CODE_PATH || 'src';
+          const baseDir = process.env.GITHUB_WORKSPACE || process.cwd();
+          const absoluteCodePath = path.isAbsolute(rawCodePath)
+            ? rawCodePath
+            : path.resolve(baseDir, rawCodePath);
 
           const results = await calculateMetrics({
-            codePath: process.env.CODE_PATH
+            codePath: absoluteCodePath
           });
 
-          await fs.mkdir(\"jtmetrics-output\", { recursive: true });
+          await fs.mkdir('jtmetrics-output', { recursive: true });
           await fs.writeFile(
-            \"jtmetrics-output/metrics-\" + process.env.GITHUB_SHA + \".json\",
+            'jtmetrics-output/metrics-' + process.env.GITHUB_SHA + '.json',
             JSON.stringify(results, null, 2)
           );
           "
