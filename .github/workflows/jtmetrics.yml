@@ -2,13 +2,12 @@ name: JT Metrics
 
 on:
   push:
-    branches:
-      - "**"
+    branches-ignore:
+      - metrics-data
   workflow_dispatch:
 
 jobs:
   metrics:
-    if: github.ref != "refs/heads/metrics-data"
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -52,7 +51,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git fetch origin metrics-data || true
-          git switch -C metrics-data origin/metrics-data || git switch --orphan metrics-data
+          git checkout metrics-data || git checkout --orphan metrics-data
 
           git add jtmetrics-output/
           git commit -m "metrics: ${GITHUB_SHA}" || echo "No changes to commit"
