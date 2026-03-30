@@ -1,0 +1,65 @@
+name: JT Metrics
+
+on:
+  push:
+    branches-ignore:
+      - metrics-data
+  workflow_dispatch:
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      CODE_PATH: src
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install JTMetrics
+        run: npm install --no-save jtmetrics
+
+      - name: Calculate metrics and write JSON
+        run: |
+          node --input-type=module -e "
+          import path from 'node:path';
+          import { calculateMetrics } from 'jtmetrics';
+          import fs from 'node:fs/promises';
+
+          const rawCodePath = process.env.CODE_PATH || 'src';
+          const baseDir = process.env.GITHUB_WORKSPACE || process.cwd();
+          const absoluteCodePath = path.isAbsolute(rawCodePath)
+            ? rawCodePath
+            : path.resolve(baseDir, rawCodePath);
+
+          const results = await calculateMetrics({
+            codePath: absoluteCodePath
+          });
+
+          await fs.mkdir('jtmetrics-output', { recursive: true });
+          await fs.writeFile(
+            'jtmetrics-output/metrics-' + process.env.GITHUB_SHA + '.json',
+            JSON.stringify(results, null, 2)
+          );
+          "
+
+      - name: Commit JSON to metrics-data branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin metrics-data || true
+          git checkout metrics-data || git checkout --orphan metrics-data
+
+          git add jtmetrics-output/
+          git commit -m "metrics: ${GITHUB_SHA}" || echo "No changes to commit"
+          git push origin HEAD:metrics-data

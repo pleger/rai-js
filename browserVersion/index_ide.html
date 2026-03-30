@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IDE-RAI</title>
+</head>
+
+<link rel="stylesheet" href="lib/codemirror.css">
+<script src="lib/codemirror.js"></script>
+<link rel="stylesheet" href="lib/night.css">
+<script src="lib/javascript.js"></script>
+<script src="raijs.js"></script>
+
+
+<!-- <script src="../mode/javascript/javascript.js"></script>-->
+<!-- <script src="../mode/xml/xml.js"></script> -->
+<!-- <script src="../mode/htmlmixed/htmlmixed.js"></script> -->
+<style>
+    .border {
+        border: 1px solid #f7f7f7;
+    }
+</style>
+
+<body>
+<form>
+    <textarea id="code" name="code" rows="50">
+    let output = document.getElementById("output");
+    let {Signal, SignalComp, Layer, RAI} = require("raijs");
+    let screen = {
+        gyroscope: new Signal(0),
+        rotate: function () {
+            output.innerHTML += 'Rotating <br>';
+        }
+    };
+    let playerView = {
+        draw: function () {
+            output.innerHTML += 'Showing a Movie <br>';
+        }
+    };
+    //adaptation
+    let landscape = {
+        condition: "gyroLevel > 45",
+        enter: function () {
+            output.innerHTML += 'ENTER TRANSITION <br>';
+            screen.rotate();
+        }
+    };
+    RAI.exhibit(screen, {gyroLevel: screen.gyroscope});
+    RAI.addPartialMethod(landscape, playerView, "draw",
+        function () {
+            Layer.proceed();
+            output.innerHTML += '[LAYER] Landscape Mode <br>';
+        }
+    );
+    RAI.deploy(landscape);
+    playerView.draw();
+    output.innerHTML += '<br>Change SmartPhone position <br>';
+    screen.gyroscope.value = 60;
+    playerView.draw();
+
+    </textarea>
+</form>
+<div id="output" style="border-style: outset;height: 190px;
+  width: 100%;"> OUTPUT </div>
+<button type="button" onclick="run();" >RUN</button>
+
+<script>
+    let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        theme: "night"
+    });
+    editor.setSize(null,490);
+
+    function run() {
+        let code = editor.getTextArea().value;
+        //console.log("CODE:"+code);
+        eval(code);
+    }
+
+</script>
+
+</body>
+</html>

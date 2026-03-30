@@ -1,0 +1,22 @@
+{
+  "name": "cop-js",
+  "version": "1.0.0",
+  "description": "Context-Oriented Programming with Signal Interface for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Context-Oriented Programming",
+    "Signal Interfaces"
+  ],
+  "author": "Paul Leger",
+  "license": "MIT",
+  "dependencies": {
+    "exectimer": "^2.2.2",
+    "nodeunit": "^0.11.3",
+    "npm": "^6.13.4",
+    "performance-now": "^2.1.0",
+    "uglifyify": "^5.0.2"
+  }
+}

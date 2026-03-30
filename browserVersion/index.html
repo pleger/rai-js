@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RAI-JS</title>
+</head>
+
+<!-- Using browserfy -->
+<script src="raijs.js"></script>
+
+<body>
+<div id="output"> </div>
+</body>
+
+<script>
+    let output = document.getElementById("output");
+    let {Signal, SignalComp, Layer, RAI} = require("raijs");
+    let screen = {
+        gyroscope: new Signal(0),
+        rotate: function () {
+            output.innerHTML += 'Rotating <br>';
+        }
+    };
+    let playerView = {
+        draw: function () {
+            output.innerHTML += 'Showing a Movie <br>';
+        }
+    };
+    //adaptation
+    let landscape = {
+        condition: "gyroLevel > 45",
+        enter: function () {
+            output.innerHTML += 'ENTER TRANSITION <br>';
+            screen.rotate();
+        }
+    };
+    RAI.exhibit(screen, {gyroLevel: screen.gyroscope});
+    RAI.addPartialMethod(landscape, playerView, "draw",
+        function () {
+            Layer.proceed();
+            output.innerHTML += '[LAYER] Landscape Mode <br>';
+        }
+    );
+    RAI.deploy(landscape);
+    playerView.draw();
+    output.innerHTML += '<br>Change SmartPhone position <br>';
+    screen.gyroscope.value = 60;
+    playerView.draw();
+</script>
+</html>
